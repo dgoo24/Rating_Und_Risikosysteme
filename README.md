@@ -184,6 +184,7 @@ re-implement module logic.
 | `docs/metric_definitions.md` | Module A/B KPIs and benchmark metric formulas |
 | `docs/data_quality_rules.md` | the 63-rule catalogue and severity semantics |
 | `docs/qlik_integration.md` | star schema, load script, integration boundary |
+| `docs/deployment.md` | hosting the dashboard for free on Streamlit Community Cloud |
 | `docs/interview_demo.md` | 10-step, 5–10 minute guided demo |
 
 `docs/interview_demo.md` is the scripted walkthrough for a live
