@@ -1,12 +1,12 @@
 area,key,value,note
-PD mapping,A,0.001,Fictional demonstration PD 12M.
-PD mapping,B,0.003,Fictional demonstration PD 12M.
-PD mapping,C,0.008,Fictional demonstration PD 12M.
-PD mapping,D,0.02,Fictional demonstration PD 12M.
-PD mapping,E,0.05,Fictional demonstration PD 12M.
-PD mapping,F,0.12,Fictional demonstration PD 12M.
-Collateral haircut,REAL_ESTATE,0.2,Demonstration haircut.
-Collateral haircut,FINANCIAL_COLLATERAL,0.05,Demonstration haircut.
-Collateral haircut,OTHER,0.4,Demonstration haircut.
-Reporting,disclaimer,SYNTHETIC DEMONSTRATION DATA - NOT REGULATORY REPORTING AND NOT REAL SPARKASSEN OR CUSTOMER INFORMATION,Synthetic demonstration data.
-Reporting,reporting_date,2026-09-30,Selected reporting date.
+PD mapping,A,0.001,Fiktionale Demonstrations-PD 12M.
+PD mapping,B,0.003,Fiktionale Demonstrations-PD 12M.
+PD mapping,C,0.008,Fiktionale Demonstrations-PD 12M.
+PD mapping,D,0.02,Fiktionale Demonstrations-PD 12M.
+PD mapping,E,0.05,Fiktionale Demonstrations-PD 12M.
+PD mapping,F,0.12,Fiktionale Demonstrations-PD 12M.
+Collateral haircut,REAL_ESTATE,0.2,Demonstrations-Haircut.
+Collateral haircut,FINANCIAL_COLLATERAL,0.05,Demonstrations-Haircut.
+Collateral haircut,OTHER,0.4,Demonstrations-Haircut.
+Reporting,disclaimer,SYNTHETISCHE DEMONSTRATIONSDATEN - KEINE REGULATORISCHE BERICHTSERSTATTUNG UND KEINE ECHTEN SPARKASSEN- ODER KUNDENDATEN,Synthetische Demonstrationsdaten.
+Reporting,reporting_date,2026-09-30,Ausgewählter Berichtsstichtag.

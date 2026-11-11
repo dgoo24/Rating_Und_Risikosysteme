@@ -39,7 +39,7 @@ prevent double-loading.
 
 ### 3. The quality rules (~45 s)
 
-Open `docs/data_quality_rules.md` or the *Data Quality* dashboard page (see
+Open `docs/data_quality_rules.md` or the *Datenqualität* dashboard page (see
 step 7): completeness / consistency / plausibility / uniqueness across the
 four datasets; severity semantics table (ERROR = quarantine, WARNING = flag).
 One concrete example: the generator injects an exposure with an invalid
@@ -56,7 +56,7 @@ rating analytics, no loss numbers.
 
 ### 5. Module B — Loss Estimation (~1 min)
 
-Open the *Loss Estimation* page: haircut-adjusted collateral coverage
+Open the *Verlustschätzung* page: haircut-adjusted collateral coverage
 (REAL_ESTATE 20%, FINANCIAL 5%, OTHER 40%), capped secured EAD, stale
 valuations (>3 years), the 12M default cohort, realised recovery rate
 (EAD-weighted), loss rate and recovery cashflow timing. One sentence on
@@ -110,7 +110,7 @@ the enterprise BI target this export is shaped for.
 python -m pytest tests/ -q
 ```
 
-162 tests pass in about a minute. Every expected value is hand-computed
+163 tests pass in about a minute. Every expected value is hand-computed
 (documented in the test docstrings) — weighted PD 13.9/1900, recovery rate
 85/200 = 0.425, peer aggregate 130/500 = 0.26, … — not re-implementations of
 module logic. The suite covers transformations, ingestion adapters, all 63

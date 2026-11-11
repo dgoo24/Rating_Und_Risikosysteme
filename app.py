@@ -1,13 +1,17 @@
-"""Streamlit dashboard entry point for the Automated Risk Portfolio Reporting prototype.
+"""Streamlit-Dashboard-Einstiegspunkt des Prototyps für automatisiertes
+Risikoportfolio-Berichtswesen.
 
-Start with:
+Start mit:
     streamlit run app.py
 
-The dashboard is read-only towards the curated DuckDB database and covers both
-specialized risk modules (Rating & Scoring, Loss Estimation) plus the shared
-infrastructure (ingestion, data quality, benchmarking, reporting). Page bodies
-live in the ``dashboard`` package; ``dashboard/pages`` contains the thin
-navigation entry points registered below.
+Das Dashboard liest die kuratierte DuckDB-Datenbank ausschließlich lesend und
+bietet neben den beiden Fachmodulen (Rating & Scoring, Verlustschätzung) auch
+die gemeinsam genutzte Infrastruktur (Datenübernahme, Datenqualität,
+Benchmarking, Reporting). Die Seiteninhalte liegen im Paket ``dashboard``;
+``dashboard/pages`` enthält die schlanken Navigations-Einstiegspunkte.
+
+Die Navigation läuft als horizontale Kopfzeile - auf eine Seitenleiste wird
+vollständig verzichtet.
 """
 from __future__ import annotations
 
@@ -20,8 +24,8 @@ st.set_page_config(**PAGE_CONFIG)
 
 if not database_exists():
     st.error(
-        "The curated database does not exist yet. Generate synthetic data and run the "
-        "ingestion pipeline first:"
+        "Die kuratierte Datenbank existiert noch nicht. Erzeugen Sie zunächst "
+        "synthetische Daten und starten Sie danach die Aufnahmepipeline:"
     )
     st.code(
         "python -m synthetic_data.generate_data\n"
@@ -31,13 +35,13 @@ if not database_exists():
     st.stop()
 
 pages = [
-    st.Page("dashboard/pages/overview_page.py", title="Executive overview", icon=":material/dashboard:", default=True),
-    st.Page("dashboard/pages/ingestion_page.py", title="Data ingestion", icon=":material/input:"),
-    st.Page("dashboard/pages/data_quality_page.py", title="Data quality", icon=":material/verified:"),
-    st.Page("dashboard/pages/rating_page.py", title="Rating & scoring", icon=":material/grade:"),
-    st.Page("dashboard/pages/loss_page.py", title="Loss estimation", icon=":material/trending_down:"),
+    st.Page("dashboard/pages/overview_page.py", title="Überblick", icon=":material/dashboard:", default=True),
+    st.Page("dashboard/pages/ingestion_page.py", title="Datenübernahme", icon=":material/input:"),
+    st.Page("dashboard/pages/data_quality_page.py", title="Datenqualität", icon=":material/verified:"),
+    st.Page("dashboard/pages/rating_page.py", title="Rating & Scoring", icon=":material/grade:"),
+    st.Page("dashboard/pages/loss_page.py", title="Verlustschätzung", icon=":material/trending_down:"),
     st.Page("dashboard/pages/benchmarking_page.py", title="Benchmarking", icon=":material/compare_arrows:"),
     st.Page("dashboard/pages/reporting_page.py", title="Reporting", icon=":material/description:"),
 ]
 
-st.navigation(pages).run()
+st.navigation(pages, position="top").run()

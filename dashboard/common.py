@@ -1,8 +1,14 @@
-"""Shared data access, caching, formatting and layout helpers for the dashboard.
+"""Gemeinsamer Datenzugriff, Caching, Formatierung und Layout für das Dashboard.
 
-The dashboard is deliberately read-only: it reads the same curated DuckDB tables
-as the PDF/Excel reporting layer and never mutates the database. Expensive module
-results are cached per reporting date and scope.
+Das Dashboard ist bewusst nur lesend: Es greift auf dieselben kuratierten
+DuckDB-Tabellen zu wie die PDF-/Excel-Berichtsebene und verändert die
+Datenbank nie. Teure Modulergebnisse werden pro Berichtsstichtag und Umfang
+zwischengespeichert.
+
+Alle Benutzeroberflächen-Texte sind deutsch; Zahlen und Datumswerte folgen der
+deutschen Konvention (Dezimalkomma, Punkt als Tausendertrennzeichen,
+TT.MM.JJJJ). Die Navigation läuft über eine horizontale Kopfzeile; die
+globalen Umfangsfilter liegen direkt im Hauptbereich der Seite.
 """
 from __future__ import annotations
 
@@ -32,10 +38,60 @@ from reporting.data_access import (
 
 CACHE_TTL = "10m"
 
+# Sparkassenrot und die begleitenden Neutraltöne des Corporate Designs.
+SPARKASSE_RED = "#E6001E"
+SPARKASSE_DARK = "#262626"
+SPARKASSE_GRAY = "#6B6B6B"
 
-@st.cache_data(ttl=CACHE_TTL, max_entries=2, show_spinner="Loading curated data...")
+_BRAND_CSS = """
+<style>
+[data-testid="stSidebar"], [data-testid="stSidebarCollapsedControl"] {display: none !important;}
+.rr-brand {
+    display: flex; align-items: center; gap: 14px;
+    background: linear-gradient(90deg, #E6001E 0%, #A3001F 100%);
+    color: #FFFFFF; border-radius: 10px;
+    padding: 12px 20px; margin-bottom: 6px;
+    box-shadow: 0 2px 10px rgba(166, 0, 25, 0.18);
+}
+.rr-brand svg {width: 34px; height: 34px; flex: 0 0 auto;}
+.rr-brand-title {font-size: 1.24rem; font-weight: 700; letter-spacing: 0.2px; display: block; line-height: 1.25;}
+.rr-brand-sub {font-size: 0.82rem; opacity: 0.93; display: block; margin-top: 2px;}
+.rr-brand-badge {
+    margin-left: auto; font-size: 0.66rem; font-weight: 700; letter-spacing: 1.4px;
+    border: 1px solid rgba(255, 255, 255, 0.7); padding: 3px 10px; border-radius: 999px;
+    text-transform: uppercase; white-space: nowrap;
+}
+.rr-scope-label {
+    color: #E6001E; font-weight: 700; font-size: 0.78rem; letter-spacing: 1.6px;
+    text-transform: uppercase; margin: 0 0 2px 0;
+}
+[data-testid="stMetric"] {border-color: #F1C9CE !important;}
+[data-testid="stMetricLabel"] p {color: #454957; font-weight: 600;}
+[data-testid="stMetricValue"] {color: #262626; font-weight: 700;}
+.rr-footer {text-align: center; color: #6B6B6B; font-size: 0.78rem; line-height: 1.6;}
+.rr-footer strong {color: #8C0011;}
+</style>
+"""
+
+_BRAND_HTML = """
+<div class="rr-brand">
+    <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <rect x="2" y="25" width="8" height="13" rx="2" fill="#FFFFFF" opacity="0.72"/>
+        <rect x="16" y="16" width="8" height="22" rx="2" fill="#FFFFFF" opacity="0.87"/>
+        <rect x="30" y="4" width="8" height="34" rx="2" fill="#FFFFFF"/>
+    </svg>
+    <div>
+        <span class="rr-brand-title">Risikoportfolio-Berichtswesen</span>
+        <span class="rr-brand-sub">Automatisierte Berichtsplattform &middot; Rating und Risikosysteme</span>
+    </div>
+    <span class="rr-brand-badge">Demo-Daten</span>
+</div>
+"""
+
+
+@st.cache_data(ttl=CACHE_TTL, max_entries=2, show_spinner="Lade kuratierte Daten ...")
 def load_data() -> dict[str, pd.DataFrame]:
-    """Load every curated table once per cache window."""
+    """Lädt jede kuratierte Tabelle einmal pro Cache-Zeitfenster."""
     data = load_all_inputs()
     data["data_version"] = data_version_info()
     return data
@@ -60,58 +116,73 @@ def bank_label_map(data: dict[str, pd.DataFrame]) -> dict[str, str]:
     return {bank_id: f"{bank_id} - {names.get(bank_id, bank_id)}" for bank_id in all_banks(data)}
 
 
+def render_brand_header() -> None:
+    """Rendert den Sparkasse-inspirierten Marken-Header und die Basis-Styles."""
+    st.markdown(_BRAND_CSS + _BRAND_HTML, unsafe_allow_html=True)
+
+
+def render_footer(data: dict[str, pd.DataFrame]) -> None:
+    """Rendert den Seitenfuß mit Datenstand und Disclaimer."""
+    version = data.get("data_version") or {}
+    run = version.get("pipeline_run") or {}
+    run_id = run.get("pipeline_run_id", "nicht verfügbar")
+    batches = int(version.get("batch_count", 0) or 0)
+    st.divider()
+    st.markdown(
+        f'<div class="rr-footer">Datenstand: {run_id} &middot; abgeschlossene Batches: {batches}<br>'
+        f"<strong>{DISCLAIMER}</strong></div>",
+        unsafe_allow_html=True,
+    )
+
+
 def render_scope_filters(data: dict[str, pd.DataFrame]) -> None:
-    """Render global sidebar filters used by every page."""
+    """Rendert die globalen Umfangsfilter im Hauptbereich (statt Seitenleiste)."""
     dates = reporting_dates(data.get("exposures"))
     banks = all_banks(data)
     sectors = sorted(
         data["exposures"]["industry_sector"].dropna().astype(str).unique().tolist()
     ) if not data.get("exposures", pd.DataFrame()).empty else []
 
-    with st.sidebar:
-        st.markdown("## Reporting scope")
+    with st.container(border=True):
+        st.markdown('<p class="rr-scope-label">Berichtsumfang</p>', unsafe_allow_html=True)
         if not dates:
-            st.error("No quarter-end reporting dates are available.")
+            st.error("Es sind keine Quartalsstichtage verfügbar.")
             st.stop()
         current = st.session_state.get("global_reporting_date")
         index = dates.index(current) if current in dates else len(dates) - 1
-        st.selectbox(
-            "Reporting date",
-            options=dates,
-            index=index,
-            format_func=lambda value: pd.Timestamp(value).strftime("%d %b %Y"),
-            key="global_reporting_date",
-        )
         labels = bank_label_map(data)
         current_banks = st.session_state.get("global_bank_ids")
         default_banks = [bank for bank in (current_banks or banks) if bank in banks]
-        st.multiselect(
-            "Institutions",
-            options=banks,
-            default=default_banks,
-            format_func=lambda bank_id: labels.get(bank_id, bank_id),
-            key="global_bank_ids",
-            help="An empty selection is interpreted as the full reporting community.",
-        )
-        st.multiselect(
-            "Industry sectors",
-            options=sectors,
-            default=st.session_state.get("global_sectors", []),
-            placeholder="All sectors",
-            key="global_sectors",
-        )
-        st.divider()
-        version = data.get("data_version") or {}
-        run = version.get("pipeline_run") or {}
-        st.caption(
-            f"Data version: {run.get('pipeline_run_id', 'unavailable')}\n\n"
-            f"Completed batches: {version.get('batch_count', 0):,}"
-        )
-        st.caption(DISCLAIMER)
+        col_date, col_banks, col_sectors = st.columns([1, 2, 2])
+        with col_date:
+            st.selectbox(
+                "Berichtsstichtag",
+                options=dates,
+                index=index,
+                format_func=fmt_date_de,
+                key="global_reporting_date",
+            )
+        with col_banks:
+            st.multiselect(
+                "Institute",
+                options=banks,
+                default=default_banks,
+                format_func=lambda bank_id: labels.get(bank_id, bank_id),
+                key="global_bank_ids",
+                help="Eine leere Auswahl wird als gesamte Berichtsgemeinschaft interpretiert.",
+            )
+        with col_sectors:
+            st.multiselect(
+                "Wirtschaftssektoren",
+                options=sectors,
+                default=st.session_state.get("global_sectors", []),
+                placeholder="Alle Sektoren",
+                key="global_sectors",
+            )
 
 
 def scope(data: dict[str, pd.DataFrame] | None = None) -> tuple[pd.Timestamp, list[str], list[str]]:
-    """Return the effective reporting date, bank IDs and sectors."""
+    """Liefert den wirksamen Berichtsstichtag, Instituts- und Sektorenumfang."""
     if data is None:
         data = load_data()
     dates = reporting_dates(data.get("exposures"))
@@ -128,9 +199,9 @@ def scope(data: dict[str, pd.DataFrame] | None = None) -> tuple[pd.Timestamp, li
 
 
 def scope_caption(report: pd.Timestamp, banks: Sequence[str], sectors: Sequence[str]) -> None:
-    sector_text = ", ".join(sectors) if sectors else "all industry sectors"
+    sector_text = ", ".join(sectors) if sectors else "alle Wirtschaftssektoren"
     st.caption(
-        f"Scope: {report.strftime('%d %b %Y')} | {len(banks)} institution(s) | {sector_text}"
+        f"Umfang: {fmt_date_de(report)} | {len(banks)} Institut(e) | {sector_text}"
     )
 
 
@@ -200,7 +271,7 @@ def get_historical_benchmark(
 
 @st.cache_data(ttl=CACHE_TTL, max_entries=24, show_spinner=False)
 def get_quality_summary(report_iso: str, banks: tuple[str, ...]) -> QualitySummary:
-    """Quality summary for one reporting date and institution scope."""
+    """Qualitätsübersicht für einen Berichtsstichtag und Institutsumfang."""
     data = load_data()
     report = pd.Timestamp(report_iso).normalize()
     batch = data["batches"].copy()
@@ -233,42 +304,68 @@ def filter_benchmark_banks(detail: pd.DataFrame, banks: Sequence[str]) -> pd.Dat
     return detail[detail["bank_id"].astype(str).isin([str(bank) for bank in banks])].copy()
 
 
+def _de_number(number: float, digits: int = 0) -> str:
+    """Formatiert eine Zahl deutsch: Punkt als Tausender-, Komma als Dezimaltrenner."""
+    text = f"{number:,.{digits}f}"
+    return text.replace(",", "\x00").replace(".", ",").replace("\x00", ".")
+
+
+def fmt_date_de(value: object) -> str:
+    """Datum im deutschen Format TT.MM.JJJJ."""
+    if value is None:
+        return ""
+    try:
+        return pd.Timestamp(value).strftime("%d.%m.%Y")
+    except (TypeError, ValueError):
+        return str(value)
+
+
+def fmt_datetime_de(value: object) -> str:
+    """Zeitstempel im deutschen Format TT.MM.JJJJ HH:MM."""
+    if value is None or pd.isna(value):
+        return "k. A."
+    try:
+        return pd.Timestamp(value).strftime("%d.%m.%Y %H:%M")
+    except (TypeError, ValueError):
+        return str(value)
+
+
 def fmt_eur(value: object, compact: bool = True) -> str:
     if value is None or pd.isna(value):
-        return "n/a"
+        return "k. A."
     number = float(value)
     if compact:
         if abs(number) >= 1_000_000_000:
-            return f"EUR {number / 1_000_000_000:,.2f}bn"
+            return f"{_de_number(number / 1_000_000_000, 2)} Mrd. EUR"
         if abs(number) >= 1_000_000:
-            return f"EUR {number / 1_000_000:,.1f}m"
+            return f"{_de_number(number / 1_000_000, 1)} Mio. EUR"
         if abs(number) >= 1_000:
-            return f"EUR {number / 1_000:,.1f}k"
-    return f"EUR {number:,.0f}"
+            return f"{_de_number(number, 0)} EUR"
+    return f"{_de_number(number, 0)} EUR"
 
 
 def fmt_pct(value: object, digits: int = 2) -> str:
     if value is None or pd.isna(value):
-        return "n/a"
-    return f"{float(value) * 100:,.{digits}f}%"
+        return "k. A."
+    return f"{_de_number(float(value) * 100, digits)} %"
 
 
 def fmt_int(value: object) -> str:
     if value is None or pd.isna(value):
-        return "n/a"
-    return f"{int(value):,}"
+        return "k. A."
+    return _de_number(int(value), 0)
 
 
 def fmt_days(value: object) -> str:
     if value is None or pd.isna(value):
-        return "n/a"
-    return f"{float(value):,.0f} days"
+        return "k. A."
+    return f"{_de_number(float(value), 0)} Tage"
 
 
 def metric_row(items: Sequence[tuple[str, str, str | None]]) -> None:
-    """Render a responsive row of bordered metrics.
+    """Rendert eine responsive Zeile umrandeter Kennzahlen.
 
-    ``items`` contains ``(label, value, help)`` triples.
+    ``items`` enthält ``(Bezeichnung, Wert, Hilfe)``-Tripel.
     """
     with st.container(horizontal=True):
         for label, value, help_text in items:
@@ -288,7 +385,7 @@ def empty_state(message: str) -> None:
 
 
 def render_download(path: str | Path, label: str, key: str, mime: str | None = None) -> None:
-    """Render a download button when the artefact exists on disk."""
+    """Rendert eine Download-Schaltfläche, wenn das Artefakt existiert."""
     file_path = Path(path)
     if not file_path.exists():
         return
@@ -311,7 +408,7 @@ def format_dataframe_dates(frame: pd.DataFrame, columns: Iterable[str]) -> pd.Da
 
 
 def report_artifacts(report: pd.Timestamp | None = None) -> pd.DataFrame:
-    """Report log entries, optionally restricted to one reporting date."""
+    """Berichtsprotokolleinträge, optional auf einen Berichtsstichtag begrenzt."""
     log = load_report_log()
     if log.empty:
         return log
@@ -321,16 +418,16 @@ def report_artifacts(report: pd.Timestamp | None = None) -> pd.DataFrame:
 
 
 def existing_report_downloads(report: pd.Timestamp) -> list[tuple[str, Path, str]]:
-    """Find common report artefacts for one date without relying on the log."""
+    """Findet häufige Berichtsartefakte für einen Stichtag ohne Protokoll."""
     label = pd.Timestamp(report).date().isoformat()
     candidates: list[tuple[str, Path, str]] = []
     community_pdf = REPORT_DIR / label / "community" / f"risk_report_community_{label}.pdf"
     if community_pdf.exists():
-        candidates.append(("Community PDF", community_pdf, "application/pdf"))
+        candidates.append(("Community-PDF", community_pdf, "application/pdf"))
     institution_dir = REPORT_DIR / label / "institutions"
     if institution_dir.exists():
         for path in sorted(institution_dir.glob("*.pdf")):
-            candidates.append((f"Institution PDF - {path.stem.replace('risk_report_', '').replace('_' + label, '')}", path, "application/pdf"))
+            candidates.append((f"Instituts-PDF - {path.stem.replace('risk_report_', '').replace('_' + label, '')}", path, "application/pdf"))
     return candidates
 
 

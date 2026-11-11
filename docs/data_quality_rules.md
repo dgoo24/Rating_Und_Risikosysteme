@@ -4,7 +4,7 @@ The rule catalogue lives in `quality/rules.py` (63 rules) and is seeded into
 the `dq_rule_catalog` table on every pipeline run. The catalogue is the single
 source of truth: rule IDs, names, dataset types, categories, severities and
 descriptions are defined once and reused by the check functions, the report
-context, the Excel `Data_Quality` sheet, the dashboard quality page and the
+context, the Excel `Datenqualität` sheet, the dashboard quality page and the
 Qlik `fact_quality_finding` table.
 
 ## Severity semantics
@@ -119,12 +119,12 @@ rating_history 11, collateral 15, recovery_cashflows 15.
 `overall_quality_score` per batch = `rows_valid / rows_received x 100`.
 Warning thresholds: <97 amber, <90 red (`config/settings.py`). Scores and
 rollups (by bank, rule, category) are surfaced in the report context, the
-Excel `Data_Quality` sheet and the dashboard quality page.
+Excel `Datenqualität` sheet and the dashboard quality page.
 
 ## Where findings surface
 
 - `quality_results` table — every finding with record ID, field, failed value.
 - `quarantine_records` — the rejected records with full JSON payloads.
-- Dashboard page *Data Quality* — scorecards, findings, quarantine browser.
+- Dashboard page *Datenqualität* — scorecards, findings, quarantine browser.
 - PDF/Excel reports — data quality section with score and top findings.
 - Qlik export — `fact_quality_batch` / `fact_quality_finding` tables.

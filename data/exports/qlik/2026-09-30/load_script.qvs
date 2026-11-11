@@ -1,6 +1,6 @@
-// Automated Risk Portfolio Reporting Pipeline
-// Sample Qlik Sense load script. Generated for the synthetic demonstration only.
-// Adjust vDataPath to the folder containing the exported CSV files.
+// Automatisierte Risikoportfolio-Berichtspipeline
+// Beispiel-Qlik-Sense-Ladeskript. Nur für die synthetische Demonstration erzeugt.
+// Passen Sie vDataPath auf den Ordner mit den exportierten CSV-Dateien an.
 
 SET ThousandSep=',';
 SET DecimalSep='.';
@@ -11,7 +11,7 @@ SET TimestampFormat='YYYY-MM-DD hh:mm:ss';
 SET vDataPath='.';
 
 // ---------------------------------------------------------------------------
-// Dimensions
+// Dimensionen und Fakten
 // ---------------------------------------------------------------------------
 dim_institution:
 LOAD * FROM [$(vDataPath)/dim_institution.csv] (txt, utf8, embedded labels, delimiter is ',', msq);
@@ -68,11 +68,15 @@ assumptions:
 LOAD * FROM [$(vDataPath)/assumptions.csv] (txt, utf8, embedded labels, delimiter is ',', msq);
 
 // ---------------------------------------------------------------------------
-// Suggested associations:
+// Empfohlene Assoziationen:
 //   fact_exposure_snapshot.bank_id -> dim_institution.bank_id
 //   fact_exposure_snapshot.rating_grade -> dim_rating.rating_grade
 //   fact_collateral.collateral_type -> dim_collateral_type.collateral_type
 //   fact_benchmark.metric_id -> dim_metric.metric_id
-// The date fields are ISO strings. Add a master calendar in Qlik if needed.
+// Die Datumsfelder sind ISO-Zeichenfolgen. Ergänzen Sie bei Bedarf einen
+// Hauptkalender in Qlik.
 // ---------------------------------------------------------------------------
-TRACE Synthetic demonstration data only - not regulatory reporting.
+// Hinweis: Vergleichsgruppenwerte (fact_benchmark) sind Zähler/Nenner-Aggregate
+// und schließen das Institut aus seiner eigenen Vergleichsgruppe aus.
+// ---------------------------------------------------------------------------
+TRACE Synthetische Demonstrationsdaten - keine regulatorische Berichterstattung.

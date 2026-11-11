@@ -1,4 +1,4 @@
-"""Data ingestion page."""
+"""Seite Datenübernahme."""
 from __future__ import annotations
 
 import altair as alt
@@ -18,7 +18,7 @@ from dashboard.common import (
 
 
 def render() -> None:
-    st.title("Data ingestion")
+    st.title("Datenübernahme")
     data = load_data()
     report, banks, sectors = scope(data)
     scope_caption(report, banks, sectors)
@@ -26,21 +26,21 @@ def render() -> None:
     batches = data["batches"].copy()
     runs = data["pipeline_runs"].copy()
     if batches.empty:
-        empty_state("No ingestion batches are available. Run the ingestion pipeline first.")
+        empty_state("Es sind keine Aufnahme-Batches verfügbar. Starten Sie zuerst die Aufnahmepipeline.")
         return
     batches["reporting_date"] = pd.to_datetime(batches["reporting_date"], errors="coerce").dt.normalize()
     batches["import_timestamp"] = pd.to_datetime(batches["import_timestamp"], errors="coerce")
 
     view = st.segmented_control(
-        "History window",
-        ["Selected reporting date", "All batch history"],
-        default="Selected reporting date",
+        "Historienfenster",
+        ["Ausgewählter Berichtsstichtag", "Gesamte Batch-Historie"],
+        default="Ausgewählter Berichtsstichtag",
         key="ingestion_view",
     )
-    scoped = batches if view == "All batch history" else batches[batches["reporting_date"] == report]
+    scoped = batches if view == "Gesamte Batch-Historie" else batches[batches["reporting_date"] == report]
     scoped = scoped[scoped["bank_id"].astype(str).isin(banks)]
     if scoped.empty:
-        empty_state("No batches match the selected reporting date and institutions.")
+        empty_state("Keine Batches passen zum ausgewählten Berichtsstichtag und den Instituten.")
         return
 
     completed = scoped[scoped["status"] == "COMPLETED"]
@@ -49,39 +49,46 @@ def render() -> None:
 
     metric_row(
         [
-            ("Completed batches", fmt_int(len(completed)), "Batches loaded into the curated layer."),
-            ("Rows received", fmt_int(completed["rows_received"].sum()), "Raw rows across completed batches."),
-            ("Rows valid", fmt_int(completed["rows_valid"].sum()), "Rows that passed blocking quality rules."),
-            ("Rows rejected", fmt_int(completed["rows_rejected"].sum()), "Rows that failed blocking quality rules."),
-            ("Rows warned", fmt_int(completed["rows_warned"].sum()), "Rows with non-blocking quality findings."),
-            ("Skipped duplicates", fmt_int(len(skipped)), "Files skipped because the source hash was already loaded."),
+            ("Abgeschlossene Batches", fmt_int(len(completed)), "In die kuratierte Schicht geladene Batches."),
+            ("Empfangene Zeilen", fmt_int(completed["rows_received"].sum()), "Rohdaten-Zeilen über alle abgeschlossenen Batches."),
+            ("Gültige Zeilen", fmt_int(completed["rows_valid"].sum()), "Zeilen, die die blockierenden Qualitätsregeln bestanden haben."),
+            ("Abgelehnte Zeilen", fmt_int(completed["rows_rejected"].sum()), "Zeilen, die gegen blockierende Qualitätsregeln verstoßen haben."),
+            ("Zeilen mit Warnung", fmt_int(completed["rows_warned"].sum()), "Zeilen mit nicht blockierenden Qualitätsbefunden."),
+            ("Übersprungene Duplikate", fmt_int(len(skipped)), "Dateien, die übersprungen wurden, weil der Quell-Hash bereits geladen war."),
         ]
     )
 
     st.caption(
-        "Each source file is hashed before loading. A repeated file hash is recorded as "
-        "SKIPPED_DUPLICATE rather than silently appended, which keeps the pipeline idempotent."
+        "Jede Quelldatei wird vor dem Laden gehasht. Ein wiederholter Datei-Hash wird als "
+        "SKIPPED_DUPLICATE erfasst statt stillschweigend angehängt - dadurch bleibt die Pipeline "
+        "idempotent."
     )
 
     left, right = st.columns(2)
     with left:
         with st.container(border=True):
-            st.subheader("Rows by dataset")
+            st.subheader("Zeilen nach Datensatz")
             chart_data = (
                 completed.groupby("dataset_type", as_index=False)
                 .agg(received=("rows_received", "sum"), valid=("rows_valid", "sum"), rejected=("rows_rejected", "sum"))
                 .melt(id_vars="dataset_type", var_name="measure", value_name="rows")
             )
             if chart_data.empty:
-                empty_state("No completed batches in scope.")
+                empty_state("Im Umfang liegen keine abgeschlossenen Batches vor.")
             else:
+                chart_data["measure"] = chart_data["measure"].map(
+                    {"received": "Empfangen", "valid": "Gültig", "rejected": "Abgelehnt"}
+                )
                 chart = (
                     alt.Chart(chart_data)
                     .mark_bar()
                     .encode(
-                        x=alt.X("dataset_type:N", title="Dataset", sort="-y"),
-                        y=alt.Y("rows:Q", title="Rows"),
-                        color=alt.Color("measure:N", title="Measure"),
+                        x=alt.X("dataset_type:N", title="Datensatz", sort="-y"),
+                        y=alt.Y("rows:Q", title="Zeilen"),
+                        color=alt.Color("measure:N", title="Messgröße", scale=alt.Scale(
+                            domain=["Empfangen", "Gültig", "Abgelehnt"],
+                            range=["#454957", "#13795B", "#E6001E"],
+                        )),
                         xOffset="measure:N",
                         tooltip=["dataset_type", "measure", alt.Tooltip("rows:Q", format=",.0f")],
                     )
@@ -90,22 +97,22 @@ def render() -> None:
                 st.altair_chart(chart)
     with right:
         with st.container(border=True):
-            st.subheader("Batch quality scores")
+            st.subheader("Qualitäts-Scores der Batches")
             score_data = completed.dropna(subset=["quality_score"]).sort_values("import_timestamp")
             if score_data.empty:
-                empty_state("No quality scores are available.")
+                empty_state("Es sind keine Qualitäts-Scores verfügbar.")
             else:
                 chart = (
                     alt.Chart(score_data)
                     .mark_circle(size=90, opacity=0.85)
                     .encode(
-                        x=alt.X("import_timestamp:T", title="Import time"),
-                        y=alt.Y("quality_score:Q", title="Quality score", scale=alt.Scale(domain=[90, 100])),
-                        color=alt.Color("dataset_type:N", title="Dataset"),
+                        x=alt.X("import_timestamp:T", title="Importzeitpunkt"),
+                        y=alt.Y("quality_score:Q", title="Qualitäts-Score", scale=alt.Scale(domain=[90, 100])),
+                        color=alt.Color("dataset_type:N", title="Datensatz"),
                         tooltip=[
                             alt.Tooltip("batch_id:N", title="Batch"),
-                            alt.Tooltip("bank_id:N", title="Institution"),
-                            alt.Tooltip("dataset_type:N", title="Dataset"),
+                            alt.Tooltip("bank_id:N", title="Institut"),
+                            alt.Tooltip("dataset_type:N", title="Datensatz"),
                             alt.Tooltip("quality_score:Q", title="Score", format=".2f"),
                         ],
                     )
@@ -114,7 +121,7 @@ def render() -> None:
                 st.altair_chart(chart)
 
     with st.container(border=True):
-        st.subheader("Batch register")
+        st.subheader("Batch-Register")
         display = scoped.sort_values(["reporting_date", "bank_id", "dataset_type"], ascending=[False, True, True]).copy()
         st.dataframe(
             display[
@@ -127,28 +134,28 @@ def render() -> None:
             hide_index=True,
             column_config={
                 "batch_id": st.column_config.TextColumn("Batch"),
-                "reporting_date": st.column_config.DateColumn("Reporting date", format="DD MMM YYYY"),
-                "bank_id": st.column_config.TextColumn("Institution"),
-                "dataset_type": st.column_config.TextColumn("Dataset"),
-                "source_system": st.column_config.TextColumn("Source system"),
+                "reporting_date": st.column_config.DateColumn("Berichtsstichtag", format="DD.MM.YYYY"),
+                "bank_id": st.column_config.TextColumn("Institut"),
+                "dataset_type": st.column_config.TextColumn("Datensatz"),
+                "source_system": st.column_config.TextColumn("Quellsystem"),
                 "status": st.column_config.TextColumn("Status"),
-                "rows_received": st.column_config.NumberColumn("Received", format="localized"),
-                "rows_valid": st.column_config.NumberColumn("Valid", format="localized"),
-                "rows_rejected": st.column_config.NumberColumn("Rejected", format="localized"),
-                "rows_warned": st.column_config.NumberColumn("Warned", format="localized"),
-                "quality_score": st.column_config.NumberColumn("Quality score", format="%.2f"),
-                "import_timestamp": st.column_config.DatetimeColumn("Imported", format="DD MMM YYYY HH:mm"),
-                "pipeline_run_id": st.column_config.TextColumn("Pipeline run"),
-                "source_file": st.column_config.TextColumn("Source file"),
+                "rows_received": st.column_config.NumberColumn("Empfangen", format="localized"),
+                "rows_valid": st.column_config.NumberColumn("Gültig", format="localized"),
+                "rows_rejected": st.column_config.NumberColumn("Abgelehnt", format="localized"),
+                "rows_warned": st.column_config.NumberColumn("Warnungen", format="localized"),
+                "quality_score": st.column_config.NumberColumn("Qualitäts-Score", format="%.2f"),
+                "import_timestamp": st.column_config.DatetimeColumn("Importiert", format="DD.MM.YYYY HH:mm"),
+                "pipeline_run_id": st.column_config.TextColumn("Pipeline-Lauf"),
+                "source_file": st.column_config.TextColumn("Quelldatei"),
             },
         )
 
     left, right = st.columns([3, 2])
     with left:
         with st.container(border=True):
-            st.subheader("Pipeline runs")
+            st.subheader("Pipeline-Läufe")
             if runs.empty:
-                empty_state("No pipeline runs have been recorded.")
+                empty_state("Es wurden keine Pipeline-Läufe aufgezeichnet.")
             else:
                 run_display = runs.sort_values("started_at", ascending=False).copy()
                 run_display["duration_seconds"] = (
@@ -163,21 +170,21 @@ def render() -> None:
                     ],
                     hide_index=True,
                     column_config={
-                        "pipeline_run_id": st.column_config.TextColumn("Pipeline run"),
-                        "started_at": st.column_config.DatetimeColumn("Started", format="DD MMM YYYY HH:mm"),
-                        "finished_at": st.column_config.DatetimeColumn("Finished", format="DD MMM YYYY HH:mm"),
+                        "pipeline_run_id": st.column_config.TextColumn("Pipeline-Lauf"),
+                        "started_at": st.column_config.DatetimeColumn("Gestartet", format="DD.MM.YYYY HH:mm"),
+                        "finished_at": st.column_config.DatetimeColumn("Beendet", format="DD.MM.YYYY HH:mm"),
                         "status": st.column_config.TextColumn("Status"),
-                        "batches_attempted": st.column_config.NumberColumn("Attempted"),
-                        "batches_completed": st.column_config.NumberColumn("Completed"),
-                        "rows_received": st.column_config.NumberColumn("Received", format="localized"),
-                        "rows_valid": st.column_config.NumberColumn("Valid", format="localized"),
-                        "rows_rejected": st.column_config.NumberColumn("Rejected", format="localized"),
-                        "duration_seconds": st.column_config.NumberColumn("Duration (s)", format="%.1f"),
+                        "batches_attempted": st.column_config.NumberColumn("Versucht"),
+                        "batches_completed": st.column_config.NumberColumn("Abgeschlossen"),
+                        "rows_received": st.column_config.NumberColumn("Empfangen", format="localized"),
+                        "rows_valid": st.column_config.NumberColumn("Gültig", format="localized"),
+                        "rows_rejected": st.column_config.NumberColumn("Abgelehnt", format="localized"),
+                        "duration_seconds": st.column_config.NumberColumn("Dauer (s)", format="%.1f"),
                     },
                 )
     with right:
         with st.container(border=True):
-            st.subheader("Source coverage")
+            st.subheader("Quellsystem-Abdeckung")
             coverage = (
                 completed.groupby(["source_system", "dataset_type"], as_index=False)
                 .agg(batches=("batch_id", "nunique"), rows=("rows_valid", "sum"))
@@ -187,22 +194,23 @@ def render() -> None:
                 coverage,
                 hide_index=True,
                 column_config={
-                    "source_system": st.column_config.TextColumn("Source system"),
-                    "dataset_type": st.column_config.TextColumn("Dataset"),
+                    "source_system": st.column_config.TextColumn("Quellsystem"),
+                    "dataset_type": st.column_config.TextColumn("Datensatz"),
                     "batches": st.column_config.NumberColumn("Batches"),
-                    "rows": st.column_config.NumberColumn("Valid rows", format="localized"),
+                    "rows": st.column_config.NumberColumn("Gültige Zeilen", format="localized"),
                 },
             )
             st.caption(
-                f"Data quality findings for the selected date: {quality.finding_count:,}; "
-                f"quarantined records: {quality.quarantined_records:,}."
+                f"Qualitätsbefunde für den ausgewählten Stichtag: {fmt_int(quality.finding_count)}; "
+                f"Quarantäne-Datensätze: {fmt_int(quality.quarantined_records)}."
             )
 
-    with st.expander("File-level audit fields"):
+    with st.expander("Prüffelder auf Dateiebene"):
         st.markdown(
-            "Every batch keeps the source file name, SHA-256 file hash, raw archive path and batch ID. "
-            "These fields support reproducibility and allow a reviewer to trace a transformed record back to "
-            "its original delivery. Duplicate hashes are recorded with status `SKIPPED_DUPLICATE`."
+            "Jeder Batch führt den Quelldateinamen, den SHA-256-Datei-Hash, den Archivpfad der "
+            "Rohdaten und die Batch-ID mit. Diese Felder sichern die Reproduzierbarkeit und "
+            "erlauben es, einen transformierten Datensatz bis zur ursprünglichen Lieferung "
+            "zurückzuverfolgen. Duplikat-Hashes werden mit dem Status `SKIPPED_DUPLICATE` erfasst."
         )
         hashes = scoped[["batch_id", "file_hash", "raw_archive_path", "error_message"]]
         st.dataframe(hashes, hide_index=True)

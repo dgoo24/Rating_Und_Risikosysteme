@@ -94,20 +94,24 @@ python -m reporting.cli [--reporting-date 2026-09-30] [--bank SSK001] [--sector 
                         [--formats pdf excel csv qlik]
                         [--no-community|--no-institutions|--no-distribution]
 streamlit run app.py                                        # dashboard
-python -m pytest tests/ -q                                  # 162 tests
+python -m pytest tests/ -q                                  # 163 tests
 ```
 
 ## 7. Dashboard (Streamlit — the live view)
 
-`app.py` navigates seven pages, all reading the same curated DuckDB through
-cached access (`dashboard/common.py`):
+`app.py` navigates seven pages through a top navigation bar (no sidebar), all
+reading the same curated DuckDB through cached access
+(`dashboard/common.py`). The dashboard UI is German, including German number
+formatting (comma decimal separator, dot thousands separator) and German
+date formatting (`TT.MM.JJJJ`); scope filters live in the main dashboard
+area:
 
-1. **Overview** — community KPIs and snapshot navigation
+1. **Überblick** — community KPIs and snapshot navigation
 2. **Rating & Scoring** — Module A views (PD, distribution, defaults, migration)
-3. **Loss Estimation** — Module B views (collateral, recovery, loss, cashflows)
+3. **Verlustschätzung** — Module B views (collateral, recovery, loss, cashflows)
 4. **Benchmarking** — peer comparison incl. interactive what-if overrides
-5. **Data Quality** — scores, findings, quarantine browser
-6. **Ingestion** — batch history and load outcomes
+5. **Datenqualität** — scores, findings, quarantine browser
+6. **Datenübernahme** — batch history and load outcomes
 7. **Reporting** — artefact registry and regeneration from the UI
 
 Streamlit is the prototype's live local dashboard; it is **not** the

@@ -1,4 +1,4 @@
-"""Shared bootstrap for the st.navigation page entry points."""
+"""Gemeinsames Bootstrap für die Seiteneinstiegspunkte der st.navigation."""
 from __future__ import annotations
 
 from collections.abc import Callable
@@ -6,22 +6,25 @@ from collections.abc import Callable
 import streamlit as st
 
 PAGE_CONFIG: dict[str, object] = dict(
-    page_title="Risk Portfolio Reporting",
+    page_title="Risikoportfolio-Berichtswesen",
     page_icon=":material/account_balance:",
     layout="wide",
-    initial_sidebar_state="expanded",
 )
 
 
 def start(render: Callable[[], None]) -> None:
-    """Configure the page, render global scope filters and run the page body.
+    """Seite konfigurieren, Marken-Header, Berichtsumfang und Seiteninhalt aufbauen.
 
-    ``st.set_page_config`` must be the first Streamlit command of a page
-    script. Calling it again after the entry point ran it inline is a harmless
-    no-op, so the same bootstrap works on first load and page switches.
+    ``st.set_page_config`` muss der erste Streamlit-Befehl eines Seitenskripts
+    sein. Ein erneuter Aufruf nach dem Einstiegspunkt ist ein harmloses
+    No-Op, sodass dasselbe Bootstrap beim ersten Laden und bei Seitenwechseln
+    funktioniert.
     """
     from dashboard import common
 
     st.set_page_config(**PAGE_CONFIG)
-    common.render_scope_filters(common.load_data())
+    data = common.load_data()
+    common.render_brand_header()
+    common.render_scope_filters(data)
     render()
+    common.render_footer(data)

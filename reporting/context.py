@@ -114,7 +114,7 @@ def build_report_context(
     sector_list = list(sectors) if sectors else []
     bank_list = [bank_id] if bank_id else []
     institutions = data["institutions"].copy()
-    bank_name = bank_id or "Reporting Community"
+    bank_name = bank_id or "Berichtsgemeinschaft"
     peer_group = None
     if bank_id and not institutions.empty:
         selected = institutions[institutions["bank_id"] == bank_id]

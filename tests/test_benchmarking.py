@@ -97,7 +97,7 @@ def test_normalize_metrics_fills_missing_metadata():
         columns=["metric_name", "higher_is_better", "unit"]
     )
     normalized = normalize_metrics(frame)
-    assert normalized.iloc[0]["metric_name"] == "Exposure-weighted PD 12M"
+    assert normalized.iloc[0]["metric_name"] == "PD 12M (EAD-gewichtet)"
     # pandas infers a bool dtype (numpy.bool_) when no None values are present.
     assert bool(normalized.iloc[0]["higher_is_better"]) is False
     assert normalized.iloc[0]["unit"] == "ratio"

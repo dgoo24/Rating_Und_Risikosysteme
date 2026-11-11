@@ -17,10 +17,10 @@ from database.connection import utc_now
 from reporting.audit import log_distribution, new_distribution_id
 
 FICTIONAL_RECIPIENTS = (
-    "Fictional Risk Committee",
-    "Fictional Board Reporting",
-    "Fictional Internal Audit",
-    "Fictional Peer Review Group",
+    "Fiktiver Risikoausschuss",
+    "Fiktives Vorstands-Reporting",
+    "Fiktive Interne Revision",
+    "Fiktive Peer-Review-Gruppe",
 )
 
 
@@ -47,8 +47,8 @@ def simulate_distribution(
         for recipient in recipients:
             distribution_id = new_distribution_id()
             detail = (
-                f"SIMULATED distribution only. No external system was contacted. "
-                f"Fictional recipient group: {recipient}. Local artefact: {path}"
+                f"Nur SIMULIERTE Verteilung. Es wurde kein externes System kontaktiert. "
+                F"Fiktive Empfängergruppe: {recipient}. Lokales Artefakt: {path}"
             )
             log_distribution(
                 distribution_id=distribution_id,
@@ -71,7 +71,7 @@ def simulate_distribution(
                     "status": "SIMULATED",
                     "distributed_at": timestamp.isoformat(),
                     "artefact_path": path,
-                    "detail": "No external transmission. Demonstration audit entry only.",
+                    "detail": "Keine externe Übertragung. Ausschließlich Demonstrations-Prüfeintrag.",
                 }
             )
     manifest = {
@@ -82,9 +82,9 @@ def simulate_distribution(
         "recipient_groups": list(recipients),
         "entries": entries,
         "notes": [
-            "This manifest records a simulated local distribution only.",
-            "No email, file share, API or external recipient was contacted.",
-            "Recipient groups are fictional and exist only for the demonstration.",
+            "Dieses Manifest dokumentiert ausschließlich eine simulierte lokale Verteilung.",
+            "Es wurden keine E-Mails, Dateifreigaben, APIs oder externen Empfänger kontaktiert.",
+            "Die Empfängergruppen sind fiktiv und existieren nur für diese Demonstration.",
         ],
     }
     manifest_path = directory / f"distribution_manifest_{timestamp:%Y%m%d_%H%M%S}.json"

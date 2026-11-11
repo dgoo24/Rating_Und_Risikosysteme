@@ -183,15 +183,15 @@ def build_qlik_tables(context: ReportContext, data: dict[str, pd.DataFrame]) -> 
     assumptions = pd.DataFrame(
         [
             *[
-                {"area": "PD mapping", "key": grade, "value": value, "note": "Fictional demonstration PD 12M."}
+                {"area": "PD mapping", "key": grade, "value": value, "note": "Fiktionale Demonstrations-PD 12M."}
                 for grade, value in RATING_PD_MAPPING.items()
             ],
             *[
-                {"area": "Collateral haircut", "key": collateral_type, "value": value, "note": "Demonstration haircut."}
+                {"area": "Collateral haircut", "key": collateral_type, "value": value, "note": "Demonstrations-Haircut."}
                 for collateral_type, value in COLLATERAL_HAIRCUTS.items()
             ],
-            {"area": "Reporting", "key": "disclaimer", "value": DISCLAIMER, "note": "Synthetic demonstration data."},
-            {"area": "Reporting", "key": "reporting_date", "value": context.reporting_date.date().isoformat(), "note": "Selected reporting date."},
+            {"area": "Reporting", "key": "disclaimer", "value": DISCLAIMER, "note": "Synthetische Demonstrationsdaten."},
+            {"area": "Reporting", "key": "reporting_date", "value": context.reporting_date.date().isoformat(), "note": "Ausgewählter Berichtsstichtag."},
         ]
     )
 
@@ -222,9 +222,9 @@ def load_script_text(data_path: str = ".") -> str:
         f"{name}:\nLOAD * FROM [$(vDataPath)/{name}.csv] (txt, utf8, embedded labels, delimiter is ',', msq);\n"
         for name in QLIK_FILES
     )
-    return f"""// Automated Risk Portfolio Reporting Pipeline
-// Sample Qlik Sense load script. Generated for the synthetic demonstration only.
-// Adjust vDataPath to the folder containing the exported CSV files.
+    return f"""// Automatisierte Risikoportfolio-Berichtspipeline
+// Beispiel-Qlik-Sense-Ladeskript. Nur für die synthetische Demonstration erzeugt.
+// Passen Sie vDataPath auf den Ordner mit den exportierten CSV-Dateien an.
 
 SET ThousandSep=',';
 SET DecimalSep='.';
@@ -235,18 +235,22 @@ SET TimestampFormat='YYYY-MM-DD hh:mm:ss';
 SET vDataPath='{data_path}';
 
 // ---------------------------------------------------------------------------
-// Dimensions
+// Dimensionen und Fakten
 // ---------------------------------------------------------------------------
 {files}
 // ---------------------------------------------------------------------------
-// Suggested associations:
+// Empfohlene Assoziationen:
 //   fact_exposure_snapshot.bank_id -> dim_institution.bank_id
 //   fact_exposure_snapshot.rating_grade -> dim_rating.rating_grade
 //   fact_collateral.collateral_type -> dim_collateral_type.collateral_type
 //   fact_benchmark.metric_id -> dim_metric.metric_id
-// The date fields are ISO strings. Add a master calendar in Qlik if needed.
+// Die Datumsfelder sind ISO-Zeichenfolgen. Ergänzen Sie bei Bedarf einen
+// Hauptkalender in Qlik.
 // ---------------------------------------------------------------------------
-TRACE Synthetic demonstration data only - not regulatory reporting.
+// Hinweis: Vergleichsgruppenwerte (fact_benchmark) sind Zähler/Nenner-Aggregate
+// und schließen das Institut aus seiner eigenen Vergleichsgruppe aus.
+// ---------------------------------------------------------------------------
+TRACE Synthetische Demonstrationsdaten - keine regulatorische Berichterstattung.
 """
 
 
@@ -268,23 +272,24 @@ def export_qlik_bundle(
     written.append(script)
     readme = output_dir / "README_QLIK.md"
     readme.write_text(
-        "# Qlik-ready export\n\n"
+        "# Qlik-fähiger Export\n\n"
         f"{DISCLAIMER}\n\n"
-        "This folder contains a flat-file star schema for a local Qlik Sense load. "
-        "It is not a deployed Qlik application and no external Qlik connection is claimed.\n\n"
-        "## Files\n\n"
+        "Dieser Ordner enthält ein Flat-File-Sternschema für einen lokalen Qlik-Sense-Ladelauf. "
+        "Es handelt sich nicht um eine bereitgestellte Qlik-Anwendung, und es wird keine externe "
+        "Qlik-Verbindung beansprucht.\n\n"
+        "## Dateien\n\n"
         + "\n".join(f"- `{name}.csv`" for name in QLIK_FILES)
-        + "\n- `load_script.qvs`\n\n## Load\n\n"
-        "1. Open the Qlik load script editor.\n"
-        "2. Replace `vDataPath` in `load_script.qvs` if the CSV files are not in the app's data folder.\n"
-        "3. Run the script and review the synthetic data disclaimer.\n\n"
-        "## Grain\n\n"
-        "- `fact_exposure_snapshot`: one exposure per quarter snapshot.\n"
-        "- `fact_rating_history`: one exposure per rating observation.\n"
-        "- `fact_collateral`: one collateral valuation.\n"
-        "- `fact_recovery_cashflow`: one recovery cashflow.\n"
-        "- Other fact tables are pre-aggregated by bank and/or risk dimension.\n\n"
-        "Benchmarks use numerator/denominator aggregation and exclude the bank from its own peer group.\n",
+        + "\n- `load_script.qvs`\n\n## Laden\n\n"
+        "1. Öffnen Sie den Qlik-Skripteditor.\n"
+        "2. Ersetzen Sie `vDataPath` in `load_script.qvs`, falls die CSV-Dateien nicht im Datenordner der App liegen.\n"
+        "3. Führen Sie das Skript aus und prüfen Sie den Disclaimer zu den synthetischen Daten.\n\n"
+        "## Granularität\n\n"
+        "- `fact_exposure_snapshot`: eine Position je Quartalsstichtag.\n"
+        "- `fact_rating_history`: eine Position je Ratingbeobachtung.\n"
+        "- `fact_collateral`: eine Sicherheitsbewertung.\n"
+        "- `fact_recovery_cashflow`: ein Verwertungs-Zahlungsstrom.\n"
+        "- Die übrigen Faktentabellen sind nach Institut und/oder Risikodimension voraggregiert.\n\n"
+        "Benchmark-Werte nutzen eine Zähler/Nenner-Aggregation und schließen das Institut aus seiner eigenen Vergleichsgruppe aus.\n",
         encoding="utf-8",
     )
     written.append(readme)

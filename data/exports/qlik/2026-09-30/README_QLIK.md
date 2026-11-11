@@ -1,10 +1,10 @@
-# Qlik-ready export
+# Qlik-fähiger Export
 
-SYNTHETIC DEMONSTRATION DATA - NOT REGULATORY REPORTING AND NOT REAL SPARKASSEN OR CUSTOMER INFORMATION
+SYNTHETISCHE DEMONSTRATIONSDATEN - KEINE REGULATORISCHE BERICHTSERSTATTUNG UND KEINE ECHTEN SPARKASSEN- ODER KUNDENDATEN
 
-This folder contains a flat-file star schema for a local Qlik Sense load. It is not a deployed Qlik application and no external Qlik connection is claimed.
+Dieser Ordner enthält ein Flat-File-Sternschema für einen lokalen Qlik-Sense-Ladelauf. Es handelt sich nicht um eine bereitgestellte Qlik-Anwendung, und es wird keine externe Qlik-Verbindung beansprucht.
 
-## Files
+## Dateien
 
 - `dim_institution.csv`
 - `dim_rating.csv`
@@ -26,18 +26,18 @@ This folder contains a flat-file star schema for a local Qlik Sense load. It is 
 - `assumptions.csv`
 - `load_script.qvs`
 
-## Load
+## Laden
 
-1. Open the Qlik load script editor.
-2. Replace `vDataPath` in `load_script.qvs` if the CSV files are not in the app's data folder.
-3. Run the script and review the synthetic data disclaimer.
+1. Öffnen Sie den Qlik-Skripteditor.
+2. Ersetzen Sie `vDataPath` in `load_script.qvs`, falls die CSV-Dateien nicht im Datenordner der App liegen.
+3. Führen Sie das Skript aus und prüfen Sie den Disclaimer zu den synthetischen Daten.
 
-## Grain
+## Granularität
 
-- `fact_exposure_snapshot`: one exposure per quarter snapshot.
-- `fact_rating_history`: one exposure per rating observation.
-- `fact_collateral`: one collateral valuation.
-- `fact_recovery_cashflow`: one recovery cashflow.
-- Other fact tables are pre-aggregated by bank and/or risk dimension.
+- `fact_exposure_snapshot`: eine Position je Quartalsstichtag.
+- `fact_rating_history`: eine Position je Ratingbeobachtung.
+- `fact_collateral`: eine Sicherheitsbewertung.
+- `fact_recovery_cashflow`: ein Verwertungs-Zahlungsstrom.
+- Die übrigen Faktentabellen sind nach Institut und/oder Risikodimension voraggregiert.
 
-Benchmarks use numerator/denominator aggregation and exclude the bank from its own peer group.
+Benchmark-Werte nutzen eine Zähler/Nenner-Aggregation und schließen das Institut aus seiner eigenen Vergleichsgruppe aus.

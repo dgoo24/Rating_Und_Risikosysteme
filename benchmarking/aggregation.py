@@ -26,21 +26,21 @@ class MetricDefinition:
 
 
 METRICS: tuple[MetricDefinition, ...] = (
-    MetricDefinition("PD_12M_WEIGHTED", "Exposure-weighted PD 12M", "rating", "ratio", False, "Sum(EAD x configured PD) / Sum(EAD)."),
-    MetricDefinition("SHARE_IG_A_B", "Investment-grade share (A-B, EAD)", "rating", "ratio", True, "EAD rated A or B / total rated EAD."),
-    MetricDefinition("SHARE_RATING_A", "Rating A share (EAD)", "rating", "ratio", None, "EAD rated A / total rated EAD."),
-    MetricDefinition("SHARE_RATING_B", "Rating B share (EAD)", "rating", "ratio", None, "EAD rated B / total rated EAD."),
-    MetricDefinition("SHARE_RATING_C", "Rating C share (EAD)", "rating", "ratio", None, "EAD rated C / total rated EAD."),
-    MetricDefinition("SHARE_RATING_D", "Rating D share (EAD)", "rating", "ratio", None, "EAD rated D / total rated EAD."),
-    MetricDefinition("SHARE_RATING_E", "Rating E share (EAD)", "rating", "ratio", None, "EAD rated E / total rated EAD."),
-    MetricDefinition("SHARE_RATING_F", "Rating F share (EAD)", "rating", "ratio", None, "EAD rated F / total rated EAD."),
-    MetricDefinition("DEFAULT_RATE_12M", "Observed 12M default rate (count)", "rating", "ratio", False, "Defaults in the 12M cohort / performing exposures at observation start."),
-    MetricDefinition("RATING_UPGRADE_RATE", "Rating upgrade rate", "rating", "ratio", True, "Upgrades / matched rating observations."),
-    MetricDefinition("RATING_DOWNGRADE_RATE", "Rating downgrade rate", "rating", "ratio", False, "Downgrades / matched rating observations."),
-    MetricDefinition("RECOVERY_RATE_12M", "Observed 12M recovery rate (EAD-weighted)", "loss", "ratio", True, "Recovery cashflows / EAD at default for the 12M cohort."),
-    MetricDefinition("LOSS_RATE_12M", "Observed 12M loss rate (EAD-weighted)", "loss", "ratio", False, "Loss amount / EAD at default for the 12M cohort."),
-    MetricDefinition("COLLATERAL_COVERAGE", "Adjusted collateral coverage", "loss", "ratio", True, "Haircut-adjusted collateral value / current EAD."),
-    MetricDefinition("SECURED_EAD_SHARE", "Secured EAD share (capped)", "loss", "ratio", True, "Secured EAD (capped at exposure EAD) / current EAD."),
+    MetricDefinition("PD_12M_WEIGHTED", "PD 12M (EAD-gewichtet)", "rating", "ratio", False, "Summe(EAD x konfigurierte PD) / Summe(EAD)."),
+    MetricDefinition("SHARE_IG_A_B", "Investment-Grade-Anteil (A-B, EAD)", "rating", "ratio", True, "EAD mit Rating A oder B / gesamtes geratetes EAD."),
+    MetricDefinition("SHARE_RATING_A", "Anteil Rating A (EAD)", "rating", "ratio", None, "EAD mit Rating A / gesamtes geratetes EAD."),
+    MetricDefinition("SHARE_RATING_B", "Anteil Rating B (EAD)", "rating", "ratio", None, "EAD mit Rating B / gesamtes geratetes EAD."),
+    MetricDefinition("SHARE_RATING_C", "Anteil Rating C (EAD)", "rating", "ratio", None, "EAD mit Rating C / gesamtes geratetes EAD."),
+    MetricDefinition("SHARE_RATING_D", "Anteil Rating D (EAD)", "rating", "ratio", None, "EAD mit Rating D / gesamtes geratetes EAD."),
+    MetricDefinition("SHARE_RATING_E", "Anteil Rating E (EAD)", "rating", "ratio", None, "EAD mit Rating E / gesamtes geratetes EAD."),
+    MetricDefinition("SHARE_RATING_F", "Anteil Rating F (EAD)", "rating", "ratio", None, "EAD mit Rating F / gesamtes geratetes EAD."),
+    MetricDefinition("DEFAULT_RATE_12M", "Beobachtete Ausfallquote 12M (Anzahl)", "rating", "ratio", False, "Ausfälle der 12M-Kohorte / performende Positionen zu Beobachtungsbeginn."),
+    MetricDefinition("RATING_UPGRADE_RATE", "Hochstufungsquote", "rating", "ratio", True, "Hochstufungen / übereinstimmende Ratingbeobachtungen."),
+    MetricDefinition("RATING_DOWNGRADE_RATE", "Herabstufungsquote", "rating", "ratio", False, "Herabstufungen / übereinstimmende Ratingbeobachtungen."),
+    MetricDefinition("RECOVERY_RATE_12M", "Beobachtete Verwertungsquote 12M (EAD-gewichtet)", "loss", "ratio", True, "Verwertungszahlungen / EAD im Ausfall für die 12M-Kohorte."),
+    MetricDefinition("LOSS_RATE_12M", "Beobachtete Verlustquote 12M (EAD-gewichtet)", "loss", "ratio", False, "Verlustbetrag / EAD im Ausfall für die 12M-Kohorte."),
+    MetricDefinition("COLLATERAL_COVERAGE", "Besicherungsquote (nach Haircuts)", "loss", "ratio", True, "Sicherheitenwert nach Haircuts / aktuelles EAD."),
+    MetricDefinition("SECURED_EAD_SHARE", "Besicherter EAD-Anteil (gedeckelt)", "loss", "ratio", True, "Besichertes EAD (auf Positionsebene gedeckelt) / aktuelles EAD."),
 )
 
 METRIC_BY_ID = {metric.metric_id: metric for metric in METRICS}

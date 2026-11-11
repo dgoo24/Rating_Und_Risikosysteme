@@ -1,9 +1,9 @@
-"""Reporting page: on-demand report generation, artefacts and distribution log.
+"""Reporting-Seite: bedarfsgesteuerte Berichtserstellung, Artefakte und Verteilungsprotokoll.
 
-The page is the dashboard entry point into the shared reporting engine used by
-both risk modules. It triggers the same ``generate_reports`` service as the
-command-line interface, so PDF, Excel, CSV and Qlik-ready outputs are always
-produced by identical code.
+Die Seite ist der Dashboard-Einstieg in die von beiden Risikomodulen gemeinsam
+genutzte Berichts-Engine. Sie triggert denselben ``generate_reports``-Service
+wie die Kommandozeile, sodass PDF-, Excel-, CSV- und Qlik-Ausgaben immer aus
+identischem Code entstehen.
 """
 from __future__ import annotations
 
@@ -25,6 +25,7 @@ from dashboard.common import (
     empty_state,
     excel_paths,
     fmt_int,
+    fmt_pct,
     get_quality_summary,
     load_data,
     metric_row,
@@ -39,24 +40,24 @@ from config.rating_pd_mapping import RATING_PD_MAPPING, RATING_PD_DESCRIPTION
 from reporting.report_service import generate_reports
 
 FORMAT_OPTIONS = {
-    "pdf": "PDF report",
-    "excel": "Excel workbook",
-    "csv": "CSV bundle",
-    "qlik": "Qlik-ready datasets",
+    "pdf": "PDF-Bericht",
+    "excel": "Excel-Arbeitsmappe",
+    "csv": "CSV-Paket",
+    "qlik": "Qlik-Datensätze",
 }
 
 
 def _generate_section(report: pd.Timestamp, banks: list[str], sectors: list[str]) -> None:
-    st.subheader("Generate report artefacts")
+    st.subheader("Berichtsartefakte erstellen")
     st.caption(
-        "Generation uses the same reporting service as the command line "
-        "(`python -m reporting.cli`). Every artefact is recorded in the report log with its "
-        "data version and contributing batch IDs."
+        "Die Erstellung nutzt denselben Berichtsservice wie die Kommandozeile "
+        "(`python -m reporting.cli`). Jedes Artefakt wird mit seiner Datenversion und den "
+        "beigetragenen Batch-IDs im Berichtsprotokoll erfasst."
     )
     col1, col2 = st.columns(2)
     with col1:
         formats = st.pills(
-            "Output formats",
+            "Ausgabeformate",
             options=list(FORMAT_OPTIONS),
             format_func=lambda value: FORMAT_OPTIONS[value],
             selection_mode="multi",
@@ -64,20 +65,20 @@ def _generate_section(report: pd.Timestamp, banks: list[str], sectors: list[str]
             key="report_formats",
         )
     with col2:
-        include_community = st.toggle("Community report", value=True, key="report_community")
-        include_institutions = st.toggle("Institution reports", value=True, key="report_institutions")
-        simulate_distribution = st.toggle("Simulate distribution", value=True, key="report_distribution")
+        include_community = st.toggle("Berichtsgemeinschafts-Bericht", value=True, key="report_community")
+        include_institutions = st.toggle("Institutsberichte", value=True, key="report_institutions")
+        simulate_distribution = st.toggle("Verteilung simulieren", value=True, key="report_distribution")
 
     if st.button(
-        "Generate reports",
+        "Berichte erstellen",
         type="primary",
         icon=":material/play_arrow:",
         disabled=not formats,
         width="stretch",
     ):
-        progress = st.progress(0.0, "Loading curated data and building report context...")
+        progress = st.progress(0.0, "Kuratierte Daten werden geladen und der Berichtskontext aufgebaut ...")
         try:
-            with st.spinner("Generating report artefacts..."):
+            with st.spinner("Berichtsartefakte werden erstellt ..."):
                 summary = generate_reports(
                     reporting_date=report,
                     bank_ids=banks,
@@ -89,28 +90,28 @@ def _generate_section(report: pd.Timestamp, banks: list[str], sectors: list[str]
                 )
             st.session_state["last_report_summary"] = summary
         except Exception as exc:
-            st.error(f"Report generation failed: {exc}")
+            st.error(f"Die Berichterstellung ist fehlgeschlagen: {exc}")
             return
-        progress.progress(1.0, "Completed.")
+        progress.progress(1.0, "Abgeschlossen.")
 
     summary = st.session_state.get("last_report_summary")
     if summary is None:
         return
     if summary.get("failures"):
         st.error(
-            f"{len(summary['failures'])} artefact(s) failed. See the report log for details."
+            f"{len(summary['failures'])} Artefakt(e) sind fehlgeschlagen. Details stehen im Berichtsprotokoll."
         )
     else:
         st.success(
-            f"{len(summary['generated'])} artefact(s) generated for {summary['reporting_date']} "
-            f"from data version {summary['data_version']}."
+            f"{len(summary['generated'])} Artefakt(e) für den {summary['reporting_date']} aus "
+            f"Datenversion {summary['data_version']} erstellt."
         )
     metric_row(
         [
-            ("Artefacts generated", fmt_int(len(summary.get("generated", []))), "PDF, Excel, CSV and Qlik outputs created in this run."),
-            ("Failed artefacts", fmt_int(len(summary.get("failures", []))), "Artefacts that could not be produced."),
-            ("Data version", str(summary.get("data_version", "n/a")), "Pipeline run ID backing the reports."),
-            ("Distribution", "Simulated" if summary.get("distribution_manifest") else "Not simulated", "Local simulation only; no external channel is contacted."),
+            ("Erstellte Artefakte", fmt_int(len(summary.get("generated", []))), "In diesem Lauf erzeugte PDF-, Excel-, CSV- und Qlik-Ausgaben."),
+            ("Fehlgeschlagene Artefakte", fmt_int(len(summary.get("failures", []))), "Artefakte, die nicht erzeugt werden konnten."),
+            ("Datenversion", str(summary.get("data_version", "k. A.")), "Pipeline-Lauf-ID, auf der die Berichte beruhen."),
+            ("Verteilung", "Simuliert" if summary.get("distribution_manifest") else "Nicht simuliert", "Ausschließlich lokale Simulation; es wird kein externer Kanal kontaktiert."),
         ]
     )
     for item in summary.get("generated", []):
@@ -118,7 +119,7 @@ def _generate_section(report: pd.Timestamp, banks: list[str], sectors: list[str]
         if path.is_file():
             render_download(
                 path,
-                f"Download {path.name}",
+                f"Herunterladen: {path.name}",
                 f"gen_{item['report_id']}",
                 "application/pdf" if path.suffix == ".pdf" else None,
             )
@@ -127,7 +128,7 @@ def _generate_section(report: pd.Timestamp, banks: list[str], sectors: list[str]
 
 
 def _artefact_section(report: pd.Timestamp, banks: list[str]) -> None:
-    st.subheader("Existing artefacts")
+    st.subheader("Bestehende Artefakte")
     names = {}
     data = st.session_state.get("_report_names")
     if data:
@@ -143,46 +144,46 @@ def _artefact_section(report: pd.Timestamp, banks: list[str]) -> None:
     bundle = csv_bundle_path(report)
     qlik_files = qlik_paths(report)
     if not community_pdf.exists() and not institution_pdfs and not excel_files and not bundle.exists():
-        empty_state("No artefacts exist yet for this reporting date. Generate reports above.")
+        empty_state("Für diesen Berichtsstichtag existieren noch keine Artefakte. Erstellen Sie oben Berichte.")
         return
 
     left, right = st.columns(2)
     with left:
         with st.container(border=True):
-            st.markdown("**PDF reports**")
+            st.markdown("**PDF-Berichte**")
             if community_pdf.exists():
-                render_download(community_pdf, "Community report (all institutions)", "pdf_community", "application/pdf")
+                render_download(community_pdf, "Berichtsgemeinschaft (alle Institute)", "pdf_community", "application/pdf")
             visible = [
                 path for path in institution_pdfs
                 if not banks or path.stem.split("_")[2] in banks
             ]
             for path in visible:
                 bank_id = path.stem.replace("risk_report_", "").replace(f"_{report.date().isoformat()}", "")
-                label = f"{bank_id} - {names.get(bank_id, 'institution')} report"
+                label = f"{bank_id} - {names.get(bank_id, 'Institut')} (Institutsbericht)"
                 render_download(path, label, f"pdf_{bank_id}", "application/pdf")
             if not community_pdf.exists() and not visible:
-                st.caption("No PDF reports found for the selected institutions.")
+                st.caption("Für die ausgewählten Institute wurden keine PDF-Berichte gefunden.")
     with right:
         with st.container(border=True):
-            st.markdown("**Excel workbooks**")
+            st.markdown("**Excel-Arbeitsmappen**")
             if excel_files:
                 for path in excel_files:
                     render_download(path, path.name, f"xlsx_{path.stem}")
             else:
-                st.caption("No Excel workbooks found.")
-            st.markdown("**CSV bundle**")
+                st.caption("Es wurden keine Excel-Arbeitsmappen gefunden.")
+            st.markdown("**CSV-Paket**")
             if bundle.exists():
-                render_download(bundle, "CSV bundle (ZIP)", "csv_bundle", "application/zip")
+                render_download(bundle, "CSV-Paket (ZIP)", "csv_bundle", "application/zip")
             else:
-                st.caption("No CSV bundle found.")
+                st.caption("Es wurde kein CSV-Paket gefunden.")
 
     with st.container(border=True):
-        st.markdown("**Qlik-ready datasets**")
+        st.markdown("**Qlik-Datensätze**")
         if qlik_files:
             st.caption(
-                "Standardized CSV datasets for direct ingestion into a Qlik Sense deployment. "
-                "The sample load script is shipped with the repository (qlik/load_script.qvs). "
-                "No Qlik server is connected in this prototype."
+                "Standardisierte CSV-Datensätze für die direkte Übernahme in eine Qlik-Sense-Installation. "
+                "Das Beispielladeskript liegt im Repository (qlik/load_script.qvs). "
+                "In diesem Prototyp ist kein Qlik-Server angebunden."
             )
             file_table = pd.DataFrame(
                 [
@@ -195,9 +196,17 @@ def _artefact_section(report: pd.Timestamp, banks: list[str]) -> None:
                 ]
             )
             if not file_table.empty:
-                st.dataframe(file_table, hide_index=True, width="stretch")
+                st.dataframe(
+                    file_table,
+                    hide_index=True,
+                    width="stretch",
+                    column_config={
+                        "file": st.column_config.TextColumn("Datei"),
+                        "size_kb": st.column_config.NumberColumn("Größe (KB)", format="%.1f"),
+                    },
+                )
             st.download_button(
-                "Download Qlik datasets (ZIP)",
+                "Qlik-Datensätze herunterladen (ZIP)",
                 data=download_zip([path for path in qlik_files if path.is_file() and path.suffix == ".csv"], "qlik_datasets.zip"),
                 file_name="qlik_datasets.zip",
                 mime="application/zip",
@@ -206,14 +215,14 @@ def _artefact_section(report: pd.Timestamp, banks: list[str]) -> None:
                 key="qlik_zip",
             )
         else:
-            st.caption("No Qlik exports found for this reporting date.")
+            st.caption("Für diesen Berichtsstichtag wurden keine Qlik-Exporte gefunden.")
 
 
 def _log_section(report: pd.Timestamp, banks: list[str]) -> None:
-    st.subheader("Report generation log")
+    st.subheader("Berichterstellungsprotokoll")
     log = report_artifacts(report)
     if log.empty:
-        empty_state("No report generation entries exist for this reporting date.")
+        empty_state("Für diesen Berichtsstichtag existieren keine Protokolleinträge.")
         return
     if banks:
         mask = log["bank_id"].isna() | log["bank_id"].astype(str).isin(banks)
@@ -228,40 +237,49 @@ def _log_section(report: pd.Timestamp, banks: list[str]) -> None:
         display,
         hide_index=True,
         column_config={
-            "report_id": st.column_config.TextColumn("Report ID"),
-            "report_type": st.column_config.TextColumn("Type"),
-            "module": st.column_config.TextColumn("Module"),
+            "report_id": st.column_config.TextColumn("Berichts-ID"),
+            "report_type": st.column_config.TextColumn("Typ"),
+            "module": st.column_config.TextColumn("Modul"),
             "file_format": st.column_config.TextColumn("Format"),
-            "bank_id": st.column_config.TextColumn("Institution"),
-            "reporting_date": st.column_config.DateColumn("Reporting date", format="DD MMM YYYY"),
-            "generated_at": st.column_config.DatetimeColumn("Generated", format="DD MMM YYYY HH:mm"),
+            "bank_id": st.column_config.TextColumn("Institut"),
+            "reporting_date": st.column_config.DateColumn("Berichtsstichtag", format="DD.MM.YYYY"),
+            "generated_at": st.column_config.DatetimeColumn("Erstellt", format="DD.MM.YYYY HH:mm"),
             "status": st.column_config.TextColumn("Status"),
-            "data_version": st.column_config.TextColumn("Data version"),
-            "file_path": st.column_config.TextColumn("File"),
+            "data_version": st.column_config.TextColumn("Datenversion"),
+            "file_path": st.column_config.TextColumn("Datei"),
         },
     )
 
 
 def _distribution_section(report: pd.Timestamp) -> None:
-    st.subheader("Simulated distribution")
+    st.subheader("Simulierte Verteilung")
     data = load_data()
     distribution = data.get("distribution_log", pd.DataFrame())
     if distribution.empty:
         st.info(
-            "No distribution entries exist yet. Distribution is simulated when reports are "
-            "generated with the 'Simulate distribution' toggle enabled."
+            "Es existieren noch keine Verteilungseinträge. Die Verteilung wird simuliert, "
+            "wenn Berichte mit aktiviertem Schalter 'Verteilung simulieren' erstellt werden."
         )
     else:
         grouped = (
             distribution.groupby(["recipient_group", "status"], as_index=False)
             .agg(entries=("distribution_id", "count"), reports=("report_id", "nunique"))
         )
-        st.dataframe(grouped, hide_index=True)
-        st.caption(
-            f"Total entries: {fmt_int(len(distribution))}. Channel is always SIMULATED_LOCAL_FILE; "
-            "no email, share or external system is contacted."
+        st.dataframe(
+            grouped,
+            hide_index=True,
+            column_config={
+                "recipient_group": st.column_config.TextColumn("Empfängergruppe"),
+                "status": st.column_config.TextColumn("Status"),
+                "entries": st.column_config.NumberColumn("Einträge"),
+                "reports": st.column_config.NumberColumn("Berichte"),
+            },
         )
-        with st.expander("Distribution entries"):
+        st.caption(
+            f"Einträge insgesamt: {fmt_int(len(distribution))}. Der Kanal ist immer SIMULATED_LOCAL_FILE; "
+            "es werden keine E-Mails, Freigaben oder externen Systeme kontaktiert."
+        )
+        with st.expander("Verteilungseinträge"):
             st.dataframe(
                 distribution[
                     ["distribution_id", "report_id", "recipient_group", "channel", "status", "distributed_at"]
@@ -276,37 +294,37 @@ def _distribution_section(report: pd.Timestamp) -> None:
         except (OSError, json.JSONDecodeError):
             manifest = None
         if manifest:
-            with st.expander(f"Latest distribution manifest ({latest.name})"):
+            with st.expander(f"Aktuellstes Verteilungsmanifest ({latest.name})"):
                 st.json({
                     key: manifest[key]
                     for key in ("generated_at", "reporting_date", "recipient_groups", "notes")
                     if key in manifest
                 })
     st.caption(
-        "Distribution is an extension point: a future email or enterprise channel can be added by "
-        "implementing the same manifest interface. The prototype deliberately does not send "
-        "anything or expose credentials."
+        "Die Verteilung ist ein Erweiterungspunkt: Ein künftiger E-Mail- oder Enterprise-Kanal "
+        "kann über dieselbe Manifest-Schnittstelle ergänzt werden. Der Prototyp verschickt "
+        "bewusst nichts und legt keine Zugangsdaten offen."
     )
 
 
 def _assumptions_section() -> None:
-    with st.expander("Assumptions, parameter values and metric definitions"):
+    with st.expander("Annahmen, Parameterwerte und Kennzahlendefinitionen"):
         st.markdown(
             f"- **Disclaimer:** {DISCLAIMER}\n"
-            f"- **PD 12M (model estimate):** {RATING_PD_DESCRIPTION} Mapping: "
+            f"- **PD 12M (Modellschätzung):** {RATING_PD_DESCRIPTION} Zuordnung: "
             + ", ".join(f"{key} = {value:.1%}" for key, value in sorted(RATING_PD_MAPPING.items()))
-            + "\n- **Collateral haircuts:** "
+            + "\n- **Sicherheiten-Haircuts:** "
             + COLLATERAL_HAIRCUT_DESCRIPTION
-            + " Mapping: "
+            + " Zuordnung: "
             + ", ".join(f"{key} = {value:.0%}" for key, value in sorted(COLLATERAL_HAIRCUTS.items()))
-            + f"\n- **Default observation window:** {DEFAULT_OBSERVATION_MONTHS} months from the performing portfolio at the start of the window."
-            "\n- **Loss rate:** (EAD at default - observed recovery cashflows) / EAD at default. "
-            "Collateral values are reported separately and are not added to cash recoveries, so "
-            "recoveries and collateral realizations are never double-counted.\n"
-            "- **Benchmarking:** peer values are weighted aggregates of peer numerators and "
-            "denominators, excluding the institution itself; ±10% relative gap is reported as in "
-            "line.\n"
-            "- Full definitions: `docs/metric_definitions.md` and `docs/data_quality_rules.md`."
+            + f"\n- **Ausfallbeobachtungsfenster:** {DEFAULT_OBSERVATION_MONTHS} Monate ab dem performenden Portfolio zu Beginn des Fensters."
+            "\n- **Verlustquote:** (EAD im Ausfall - beobachtete Verwertungszahlungen) / EAD im Ausfall. "
+            "Sicherheitenwerte werden gesondert ausgewiesen und nicht zu den Barverwertungen "
+            "addiert, sodass Verwertungen und Sicherheitsverwertungen nie doppelt gezählt werden.\n"
+            "- **Benchmarking:** Vergleichsgruppenwerte sind gewichtete Aggregate aus Zählern und "
+            "Nennern der Vergleichsgruppe unter Ausschluss des Instituts selbst; ein relativer "
+            "Abstand von ±10 % gilt als im Rahmen.\n"
+            "- Vollständige Definitionen: `docs/metric_definitions.md` und `docs/data_quality_rules.md`."
         )
 
 
@@ -319,14 +337,16 @@ def render() -> None:
     quality = get_quality_summary(report.isoformat(), tuple(banks))
 
     tab_generate, tab_artefacts, tab_log = st.tabs(
-        ["Generate", "Artefacts", "Log and distribution"]
+        ["Erstellen", "Artefakte", "Protokoll & Verteilung"]
     )
     with tab_generate:
         _generate_section(report, banks, sectors)
         if quality.overall_score and quality.overall_score < 97:
             st.warning(
-                f"Data quality score for this reporting date is {quality.overall_score:.2f}%. "
-                "Reports remain valid but should be read together with the data quality section."
+                f"Der Datenqualitäts-Score für diesen Berichtsstichtag beträgt "
+                f"{fmt_pct(quality.overall_score / 100)}. "
+                "Die Berichte bleiben gültig, sollten aber zusammen mit dem Abschnitt "
+                "Datenqualität gelesen werden."
             )
     with tab_artefacts:
         _artefact_section(report, banks)

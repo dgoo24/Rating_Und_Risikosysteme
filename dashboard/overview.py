@@ -1,4 +1,4 @@
-"""Executive overview page."""
+"""Überblicksseite."""
 from __future__ import annotations
 
 import altair as alt
@@ -7,9 +7,12 @@ import streamlit as st
 
 from benchmarking.benchmark_engine import benchmark_health_flags
 from dashboard.common import (
+    SPARKASSE_RED,
     bank_names,
     empty_state,
     filter_benchmark_banks,
+    fmt_datetime_de,
+    fmt_date_de,
     fmt_days,
     fmt_eur,
     fmt_int,
@@ -29,7 +32,7 @@ from dashboard.common import (
 def _best_worst(frame: pd.DataFrame, column: str, names: dict[str, str], higher_is_better: bool) -> tuple[str, str]:
     data = frame.dropna(subset=[column])
     if data.empty:
-        return "n/a", "n/a"
+        return "k. A.", "k. A."
     ordered = data.sort_values(column, ascending=not higher_is_better)
     first = ordered.iloc[0]
     last = ordered.iloc[-1]
@@ -40,7 +43,7 @@ def _best_worst(frame: pd.DataFrame, column: str, names: dict[str, str], higher_
 
 
 def render() -> None:
-    st.title("Executive overview")
+    st.title("Überblick")
     data = load_data()
     report, banks, sectors = scope(data)
     scope_caption(report, banks, sectors)
@@ -57,42 +60,43 @@ def render() -> None:
 
     metric_row(
         [
-            ("Total EAD", fmt_eur(rating_kpis.get("total_ead")), "Current exposure at default for the selected scope."),
-            ("Weighted PD 12M (model estimate)", fmt_pct(rating_kpis.get("portfolio_pd")), "Sum(EAD x configured PD) / Sum(EAD)."),
-            ("Investment-grade share", fmt_pct(rating_kpis.get("investment_grade_share")), "EAD rated A or B / rated EAD."),
-            ("Observed 12M default rate", fmt_pct(rating_kpis.get("default_rate_12m")), "Observed defaults / performing exposures at observation start."),
+            ("Haftungsvolumen (EAD)", fmt_eur(rating_kpis.get("total_ead")), "Aktuelles Haftungsvolumen (EAD) für den ausgewählten Umfang."),
+            ("PD 12M (Modellschätzung, gewichtet)", fmt_pct(rating_kpis.get("portfolio_pd")), "Summe(EAD x konfigurierte PD) / Summe(EAD)."),
+            ("Investment-Grade-Anteil", fmt_pct(rating_kpis.get("investment_grade_share")), "EAD mit Rating A oder B / geratetes EAD."),
+            ("Beobachtete Ausfallquote 12M", fmt_pct(rating_kpis.get("default_rate_12m")), "Beobachtete Ausfälle / performende Positionen zu Beobachtungsbeginn."),
         ]
     )
     metric_row(
         [
-            ("Observed 12M recovery rate", fmt_pct(loss_kpis.get("recovery_rate")), "Recovery cashflows / EAD at default for the 12M cohort."),
-            ("Observed 12M loss rate", fmt_pct(loss_kpis.get("loss_rate")), "Loss amount / EAD at default for the 12M cohort."),
-            ("Adjusted collateral coverage", fmt_pct(loss_kpis.get("collateral_coverage")), "Haircut-adjusted collateral / current EAD."),
-            ("Data quality score", fmt_pct(quality.overall_score / 100 if quality.overall_score else None), "Valid rows / received rows across completed batches."),
+            ("Beobachtete Verwertungsquote 12M", fmt_pct(loss_kpis.get("recovery_rate")), "Verwertungszahlungen / EAD im Ausfall der 12M-Kohorte."),
+            ("Beobachtete Verlustquote 12M", fmt_pct(loss_kpis.get("loss_rate")), "Verlustbetrag / EAD im Ausfall der 12M-Kohorte."),
+            ("Besicherungsquote (nach Haircuts)", fmt_pct(loss_kpis.get("collateral_coverage")), "Sicherheitenwert nach Haircuts / aktuelles EAD."),
+            ("Datenqualitäts-Score", fmt_pct(quality.overall_score / 100 if quality.overall_score else None), "Gültige Zeilen / empfangene Zeilen über alle abgeschlossenen Batches."),
         ]
     )
 
     st.caption(
-        "Model-based PD and observed default/loss rates answer different questions and are shown separately. "
-        "Observed rates are cohort statistics, not forecasts."
+        "Die modellbasierte PD und die beobachteten Ausfall- bzw. Verlustquoten beantworten "
+        "unterschiedliche Fragen und werden getrennt ausgewiesen. Beobachtete Quoten sind "
+        "Kohortenstatistiken, keine Prognosen."
     )
 
     left, right = st.columns(2)
     with left:
         with st.container(border=True):
-            st.subheader("Portfolio PD trend")
+            st.subheader("Portfolio-PD-Verlauf")
             if pd_trend.empty:
-                empty_state("No PD trend is available for the selected scope.")
+                empty_state("Für den ausgewählten Umfang ist kein PD-Verlauf verfügbar.")
             else:
                 chart = (
                     alt.Chart(pd_trend)
                     .mark_line(point=True, strokeWidth=2)
                     .encode(
-                        x=alt.X("snapshot_date:T", title="Reporting date"),
-                        y=alt.Y("weighted_pd:Q", title="Weighted PD 12M", axis=alt.Axis(format=".1%")),
+                        x=alt.X("snapshot_date:T", title="Berichtsstichtag"),
+                        y=alt.Y("weighted_pd:Q", title="PD 12M (gewichtet)", axis=alt.Axis(format=".1%")),
                         tooltip=[
-                            alt.Tooltip("snapshot_date:T", title="Date", format="%d %b %Y"),
-                            alt.Tooltip("weighted_pd:Q", title="Weighted PD", format=".2%"),
+                            alt.Tooltip("snapshot_date:T", title="Datum", format="%d.%m.%Y"),
+                            alt.Tooltip("weighted_pd:Q", title="Gewichtete PD", format=".2%"),
                             alt.Tooltip("ead:Q", title="EAD", format=",.0f"),
                         ],
                     )
@@ -101,28 +105,28 @@ def render() -> None:
                 st.altair_chart(chart)
     with right:
         with st.container(border=True):
-            st.subheader("Observed 12M default rate trend")
+            st.subheader("Verlauf der beobachteten Ausfallquote 12M")
             if default_trend.empty:
-                empty_state("No default-rate trend is available for the selected scope.")
+                empty_state("Für den ausgewählten Umfang ist kein Ausfallquoten-Verlauf verfügbar.")
             else:
                 chart = (
                     alt.Chart(default_trend)
-                    .mark_line(point=True, strokeWidth=2, color="#C0504D")
+                    .mark_line(point=True, strokeWidth=2, color=SPARKASSE_RED)
                     .encode(
-                        x=alt.X("reporting_date:T", title="Reporting date"),
-                        y=alt.Y("observed_default_rate:Q", title="Observed default rate", axis=alt.Axis(format=".1%")),
+                        x=alt.X("reporting_date:T", title="Berichtsstichtag"),
+                        y=alt.Y("observed_default_rate:Q", title="Beobachtete Ausfallquote", axis=alt.Axis(format=".1%")),
                         tooltip=[
-                            alt.Tooltip("reporting_date:T", title="Date", format="%d %b %Y"),
-                            alt.Tooltip("observed_default_rate:Q", title="Default rate", format=".2%"),
-                            alt.Tooltip("default_count:Q", title="Defaults", format=",.0f"),
-                            alt.Tooltip("base_exposures:Q", title="Base exposures", format=",.0f"),
+                            alt.Tooltip("reporting_date:T", title="Datum", format="%d.%m.%Y"),
+                            alt.Tooltip("observed_default_rate:Q", title="Ausfallquote", format=".2%"),
+                            alt.Tooltip("default_count:Q", title="Ausfälle", format=",.0f"),
+                            alt.Tooltip("base_exposures:Q", title="Basispositionen", format=",.0f"),
                         ],
                     )
                     .properties(height=260)
                 )
                 st.altair_chart(chart)
 
-    st.subheader("Institution scorecard")
+    st.subheader("Instituts-Scorecard")
     names = bank_names(data)
     by_bank = rating.pd_by_bank.copy()
     if not loss.by_bank.empty:
@@ -158,21 +162,21 @@ def render() -> None:
         display,
         hide_index=True,
         column_config={
-            "bank_id": st.column_config.TextColumn("Institution"),
+            "bank_id": st.column_config.TextColumn("Institut"),
             "bank_name": st.column_config.TextColumn("Name"),
-            "ead": st.column_config.NumberColumn("Current EAD", format="compact"),
-            "weighted_pd": percent_column("Weighted PD 12M"),
-            "observed_default_rate": percent_column("Observed 12M default rate"),
-            "recovery_rate": percent_column("Recovery rate"),
-            "loss_rate": percent_column("Loss rate"),
-            "coverage_ratio": percent_column("Collateral coverage"),
-            "better": st.column_config.NumberColumn("Benchmark better"),
-            "worse": st.column_config.NumberColumn("Benchmark worse"),
-            "in_line": st.column_config.NumberColumn("Benchmark in line"),
+            "ead": st.column_config.NumberColumn("Aktuelles EAD", format="compact"),
+            "weighted_pd": percent_column("PD 12M (gewichtet)"),
+            "observed_default_rate": percent_column("Ausfallquote 12M (beobachtet)"),
+            "recovery_rate": percent_column("Verwertungsquote"),
+            "loss_rate": percent_column("Verlustquote"),
+            "coverage_ratio": percent_column("Besicherungsquote"),
+            "better": st.column_config.NumberColumn("Benchmark: besser"),
+            "worse": st.column_config.NumberColumn("Benchmark: schlechter"),
+            "in_line": st.column_config.NumberColumn("Benchmark: im Rahmen"),
         },
     )
 
-    st.subheader("What stands out")
+    st.subheader("Was ins Auge fällt")
     best_pd, worst_pd = _best_worst(rating.pd_by_bank, "weighted_pd", names, higher_is_better=False)
     best_recovery, worst_recovery = _best_worst(loss.by_bank, "recovery_rate", names, higher_is_better=True)
     best_loss, worst_loss = _best_worst(loss.by_bank, "loss_rate", names, higher_is_better=False)
@@ -181,26 +185,27 @@ def render() -> None:
     )
     with st.container(border=True):
         st.markdown(
-            f"- **Highest weighted PD:** {worst_pd}. Lowest: {best_pd}.\n"
-            f"- **Highest observed recovery rate:** {best_recovery}. Lowest: {worst_recovery}.\n"
-            f"- **Highest observed loss rate:** {worst_loss}. Lowest: {best_loss}.\n"
-            f"- **Strongest collateral coverage:** {best_coverage}. Weakest: {worst_coverage}.\n"
-            f"- **Benchmark outcomes:** {benchmark.kpis.get('better', 0)} better, "
-            f"{benchmark.kpis.get('worse', 0)} worse and {benchmark.kpis.get('in_line', 0)} in line "
-            "across the selected institutions."
+            f"- **Höchste gewichtete PD:** {worst_pd}. Niedrigste: {best_pd}.\n"
+            f"- **Höchste beobachtete Verwertungsquote:** {best_recovery}. Niedrigste: {worst_recovery}.\n"
+            f"- **Höchste beobachtete Verlustquote:** {worst_loss}. Niedrigste: {best_loss}.\n"
+            f"- **Stärkste Besicherungsquote:** {best_coverage}. Schwächste: {worst_coverage}.\n"
+            f"- **Benchmark-Ergebnisse:** {benchmark.kpis.get('better', 0)} besser, "
+            f"{benchmark.kpis.get('worse', 0)} schlechter und {benchmark.kpis.get('in_line', 0)} im Rahmen "
+            "über die ausgewählten Institute hinweg."
         )
         st.caption(
-            "Differences may reflect portfolio mix, rating composition, collateral quality and random "
-            "variation in a small synthetic cohort. They are not causal statements."
+            "Unterschiede können auf Portfoliostruktur, Ratingzusammensetzung, Sicherheitenqualität und "
+            "zufällige Variation in einer kleinen synthetischen Kohorte zurückgehen. Es handelt sich "
+            "um keine kausalen Aussagen."
         )
 
     version = data.get("data_version") or {}
     latest_import = version.get("latest_import")
     st.caption(
-        f"Data version {((version.get('pipeline_run') or {}).get('pipeline_run_id', 'unavailable'))} | "
-        f"Latest import {pd.Timestamp(latest_import).strftime('%d %b %Y %H:%M') if latest_import is not None and pd.notna(latest_import) else 'n/a'} | "
-        f"Quality findings {fmt_int(quality.finding_count)} | Quarantined records {fmt_int(quality.quarantined_records)}"
+        f"Datenstand {((version.get('pipeline_run') or {}).get('pipeline_run_id', 'nicht verfügbar'))} | "
+        f"Letzter Import {fmt_datetime_de(latest_import)} | "
+        f"Qualitätsbefunde {fmt_int(quality.finding_count)} | Quarantäne-Datensätze {fmt_int(quality.quarantined_records)}"
     )
-    st.caption(f"Observed cohort window: {rating.kpis.get('migration_start')} to {rating.kpis.get('migration_end')}. "
-               f"Loss cohort starts {loss.window_start.date() if loss.window_start is not None else 'n/a'}.")
-    st.caption(f"Average recovery lag: {fmt_days(loss_kpis.get('weighted_average_days'))}.")
+    st.caption(f"Beobachtungsfenster der Kohorte: {rating.kpis.get('migration_start')} bis {rating.kpis.get('migration_end')}. "
+               f"Verlustkohorte beginnt {fmt_date_de(loss.window_start) if loss.window_start is not None else 'k. A.'}.")
+    st.caption(f"Durchschnittlicher Verwertungsverzug: {fmt_days(loss_kpis.get('weighted_average_days'))}.")

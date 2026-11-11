@@ -21,13 +21,13 @@ class PeerGroupDefinition:
 PEER_GROUPS: dict[str, PeerGroupDefinition] = {
     "PG_URBAN": PeerGroupDefinition(
         peer_group="PG_URBAN",
-        description="Fictional urban-market institutions (demonstration peer group)",
+        description="Fiktionale Institute im städtischen Markt (Demonstrations-Vergleichsgruppe)",
         members=("SSK001", "SSK003", "SSK005"),
         regions=("NORTH", "WEST", "EAST"),
     ),
     "PG_REGIONAL": PeerGroupDefinition(
         peer_group="PG_REGIONAL",
-        description="Fictional regional-market institutions (demonstration peer group)",
+        description="Fiktionale Institute im Regionalmarkt (Demonstrations-Vergleichsgruppe)",
         members=("SSK002", "SSK004"),
         regions=("SOUTH", "CENTRAL"),
     ),

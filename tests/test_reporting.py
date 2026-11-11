@@ -31,10 +31,10 @@ from reporting.report_service import generate_reports
 from .conftest import REPORT_DATE
 
 EXCEL_SHEETS = [
-    "Overview", "Assumptions", "Report_Metadata", "Rating_Distribution",
-    "Default_Rates", "PD_Detail", "Rating_Migration", "Loss_Summary",
-    "Recovery_Rates", "Collateral", "Recovery_Cashflows", "Benchmarking",
-    "Metric_Definitions", "Data_Quality",
+    "Übersicht", "Annahmen", "Berichtsmetadaten", "Ratingverteilung",
+    "Ausfallquoten", "PD-Details", "Ratingmigration", "Verlustübersicht",
+    "Verwertungsquoten", "Sicherheiten", "Verwertungszahlungen", "Benchmarking",
+    "Kennzahlendefinitionen", "Datenqualität",
 ]
 
 
@@ -46,7 +46,7 @@ EXCEL_SHEETS = [
 def test_build_report_context_community(portfolio):
     context = build_report_context(portfolio, REPORT_DATE)
     assert context.bank_id is None
-    assert context.bank_name == "Reporting Community"
+    assert context.bank_name == "Berichtsgemeinschaft"
     assert context.peer_group is None
     rating = context.rating.kpis
     assert rating["exposure_count"] == 8
@@ -142,7 +142,7 @@ def test_export_csv_bundle_writes_tables_and_zip(portfolio, tmp_path):
     manifest = pd.read_csv(tmp_path / "csv" / "report_manifest.csv")
     manifest_values = dict(zip(manifest["key"], manifest["value"]))
     assert manifest_values["reporting_date"] == "2026-06-30"
-    assert manifest_values["scope"] == "Reporting Community"
+    assert manifest_values["scope"] == "Berichtsgemeinschaft"
 
 
 # ---------------------------------------------------------------------------
@@ -184,11 +184,11 @@ def test_export_qlik_bundle_writes_star_schema(portfolio, tmp_path):
 
 def test_load_script_text_references_every_table():
     script = load_script_text("qlik/data")
-    assert script.startswith("// Automated Risk Portfolio Reporting Pipeline")
+    assert script.startswith("// Automatisierte Risikoportfolio-Berichtspipeline")
     assert "SET vDataPath='qlik/data';" in script
     for table in ("dim_institution", "fact_exposure_snapshot", "fact_benchmark", "assumptions"):
         assert f"FROM [$(vDataPath)/{table}.csv]" in script
-    assert "not regulatory reporting" in script
+    assert "keine regulatorische Berichterstattung" in script
 
 
 # ---------------------------------------------------------------------------
@@ -260,7 +260,7 @@ def test_generate_reports_end_to_end(portfolio, tmp_path, monkeypatch):
     payload = json.loads((report_dir / date_label / "generation_summary.json").read_text(encoding="utf-8"))
     assert payload["reporting_date"] == date_label
     assert len(payload["generated"]) == 6
-    assert "SYNTHETIC DEMONSTRATION DATA" in payload["disclaimer"]
+    assert "SYNTHETISCHE DEMONSTRATIONSDATEN" in payload["disclaimer"]
 
     # The report audit log recorded one GENERATED row per artefact.
     log = query_df("SELECT report_type, file_format, bank_id, status FROM report_log", db_path=db_path)
@@ -377,10 +377,10 @@ def test_simulate_distribution_writes_audited_manifest(tmp_path, monkeypatch):
     assert (log["status"] == "SIMULATED").all()
     assert (log["channel"] == "SIMULATED_LOCAL_FILE").all()
     assert set(log["recipient_group"]) == {
-        "Fictional Risk Committee",
-        "Fictional Board Reporting",
-        "Fictional Internal Audit",
-        "Fictional Peer Review Group",
+        "Fiktiver Risikoausschuss",
+        "Fiktives Vorstands-Reporting",
+        "Fiktive Interne Revision",
+        "Fiktive Peer-Review-Gruppe",
     }
 
 

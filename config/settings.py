@@ -76,15 +76,15 @@ SNAPSHOT_DATES: tuple[str, ...] = (
 )
 
 DISCLAIMER = (
-    "SYNTHETIC DEMONSTRATION DATA - NOT REGULATORY REPORTING AND NOT REAL "
-    "SPARKASSEN OR CUSTOMER INFORMATION"
+    "SYNTHETISCHE DEMONSTRATIONSDATEN - KEINE REGULATORISCHE "
+    "BERICHTSERSTATTUNG UND KEINE ECHTEN SPARKASSEN- ODER KUNDENDATEN"
 )
 
 
 @dataclass(frozen=True)
 class ReportSettings:
-    title: str = "Risk Portfolio Reporting"
-    organisation_label: str = "Fictional Sparkassen Reporting Community"
+    title: str = "Risikoportfolio-Berichtswesen"
+    organisation_label: str = "Fiktionale Sparkassen-Berichtsgemeinschaft"
     page_size: str = "A4"
     include_charts: bool = True
 

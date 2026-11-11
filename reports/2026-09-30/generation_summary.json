@@ -1,7 +1,7 @@
 {
-  "disclaimer": "SYNTHETIC DEMONSTRATION DATA - NOT REGULATORY REPORTING AND NOT REAL SPARKASSEN OR CUSTOMER INFORMATION",
+  "disclaimer": "SYNTHETISCHE DEMONSTRATIONSDATEN - KEINE REGULATORISCHE BERICHTSERSTATTUNG UND KEINE ECHTEN SPARKASSEN- ODER KUNDENDATEN",
   "reporting_date": "2026-09-30",
-  "generated_at": "2026-11-11T00:57:17",
+  "generated_at": "2026-11-11T08:29:35",
   "output_formats": [
     "csv",
     "excel",
@@ -78,7 +78,7 @@
   ],
   "generated": [
     {
-      "report_id": "RPT-20261111005724-A3F7962F",
+      "report_id": "RPT-20261111082944-50C23F0F",
       "report_type": "PORTFOLIO_REPORT",
       "file_format": "PDF",
       "bank_id": null,
@@ -110,7 +110,7 @@
       "module": "ALL"
     },
     {
-      "report_id": "RPT-20261111005728-06F30A2F",
+      "report_id": "RPT-20261111082949-D50E5F8C",
       "report_type": "PORTFOLIO_REPORT",
       "file_format": "XLSX",
       "bank_id": null,
@@ -142,7 +142,7 @@
       "module": "ALL"
     },
     {
-      "report_id": "RPT-20261111005729-C73F7039",
+      "report_id": "RPT-20261111082950-AE28FEB3",
       "report_type": "PORTFOLIO_REPORT",
       "file_format": "CSV_BUNDLE",
       "bank_id": null,
@@ -174,7 +174,7 @@
       "module": "ALL"
     },
     {
-      "report_id": "RPT-20261111005731-F6AE9404",
+      "report_id": "RPT-20261111082951-AAE477C2",
       "report_type": "QLIK_EXPORT",
       "file_format": "QLIK_CSV",
       "bank_id": null,
@@ -206,7 +206,7 @@
       "module": "ALL"
     },
     {
-      "report_id": "RPT-20261111005734-D16ABA8C",
+      "report_id": "RPT-20261111082954-3AF29B6D",
       "report_type": "INSTITUTION_REPORT",
       "file_format": "PDF",
       "bank_id": "SSK001",
@@ -238,7 +238,7 @@
       "module": "ALL"
     },
     {
-      "report_id": "RPT-20261111005738-C26F976C",
+      "report_id": "RPT-20261111082957-D40DC522",
       "report_type": "INSTITUTION_REPORT",
       "file_format": "XLSX",
       "bank_id": "SSK001",
@@ -270,7 +270,7 @@
       "module": "ALL"
     },
     {
-      "report_id": "RPT-20261111005741-981A345B",
+      "report_id": "RPT-20261111082959-5EF5213C",
       "report_type": "INSTITUTION_REPORT",
       "file_format": "PDF",
       "bank_id": "SSK002",
@@ -302,7 +302,7 @@
       "module": "ALL"
     },
     {
-      "report_id": "RPT-20261111005744-7C2A6929",
+      "report_id": "RPT-20261111083002-19AB2C70",
       "report_type": "INSTITUTION_REPORT",
       "file_format": "XLSX",
       "bank_id": "SSK002",
@@ -334,7 +334,7 @@
       "module": "ALL"
     },
     {
-      "report_id": "RPT-20261111005748-9EE7F4F5",
+      "report_id": "RPT-20261111083004-FC4988C7",
       "report_type": "INSTITUTION_REPORT",
       "file_format": "PDF",
       "bank_id": "SSK003",
@@ -366,7 +366,7 @@
       "module": "ALL"
     },
     {
-      "report_id": "RPT-20261111005752-2D6D6DCC",
+      "report_id": "RPT-20261111083008-366E14CB",
       "report_type": "INSTITUTION_REPORT",
       "file_format": "XLSX",
       "bank_id": "SSK003",
@@ -398,7 +398,7 @@
       "module": "ALL"
     },
     {
-      "report_id": "RPT-20261111005754-FBD37542",
+      "report_id": "RPT-20261111083010-5ECE80CB",
       "report_type": "INSTITUTION_REPORT",
       "file_format": "PDF",
       "bank_id": "SSK004",
@@ -430,7 +430,7 @@
       "module": "ALL"
     },
     {
-      "report_id": "RPT-20261111005758-C81AD296",
+      "report_id": "RPT-20261111083013-CBDD7C94",
       "report_type": "INSTITUTION_REPORT",
       "file_format": "XLSX",
       "bank_id": "SSK004",
@@ -462,7 +462,7 @@
       "module": "ALL"
     },
     {
-      "report_id": "RPT-20261111005801-E1412613",
+      "report_id": "RPT-20261111083015-D48F1222",
       "report_type": "INSTITUTION_REPORT",
       "file_format": "PDF",
       "bank_id": "SSK005",
@@ -494,7 +494,7 @@
       "module": "ALL"
     },
     {
-      "report_id": "RPT-20261111005805-8307C7D4",
+      "report_id": "RPT-20261111083018-0EFAD2B3",
       "report_type": "INSTITUTION_REPORT",
       "file_format": "XLSX",
       "bank_id": "SSK005",
@@ -529,7 +529,7 @@
   "failures": [],
   "warnings": [],
   "distribution_entries": 56,
-  "distribution_manifest": "C:\\Users\\dgoo2\\Rating_Und_Risikosysteme\\reports\\distribution\\2026-09-30\\distribution_manifest_20261111_005806.json",
+  "distribution_manifest": "C:\\Users\\dgoo2\\Rating_Und_Risikosysteme\\reports\\distribution\\2026-09-30\\distribution_manifest_20261111_083019.json",
   "community_pdf": "C:\\Users\\dgoo2\\Rating_Und_Risikosysteme\\reports\\2026-09-30\\community\\risk_report_community_2026-09-30.pdf",
   "community_excel": "C:\\Users\\dgoo2\\Rating_Und_Risikosysteme\\data\\exports\\2026-09-30\\excel\\risk_report_community_2026-09-30.xlsx",
   "csv_bundle": "C:\\Users\\dgoo2\\Rating_Und_Risikosysteme\\data\\exports\\2026-09-30\\csv\\community\\csv_bundle.zip",

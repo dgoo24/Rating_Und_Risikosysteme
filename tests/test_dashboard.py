@@ -63,4 +63,4 @@ def test_dashboard_reports_missing_database(monkeypatch, tmp_path):
     at.run()
     assert not at.exception
     assert len(at.error) == 1
-    assert "curated database" in at.error[0].value
+    assert "kuratierte Datenbank" in at.error[0].value

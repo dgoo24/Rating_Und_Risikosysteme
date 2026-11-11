@@ -18,8 +18,8 @@ COLLATERAL_HAIRCUTS: dict[str, float] = {
 }
 
 COLLATERAL_HAIRCUT_DESCRIPTION = (
-    "Simplified demonstration haircuts applied as adjusted value = value x (1 - haircut). "
-    "They are configurable and not official banking parameters."
+    "Vereinfachte Demonstrations-Haircuts, angewendet als adjustierter Wert = Wert x (1 - Haircut). "
+    "Sie sind konfigurierbar und keine offiziellen Bankparameter."
 )
 
 

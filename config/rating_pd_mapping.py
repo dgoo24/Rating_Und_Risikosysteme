@@ -17,8 +17,8 @@ RATING_PD_MAPPING: dict[str, float] = {
 }
 
 RATING_PD_DESCRIPTION = (
-    "12-month through-the-cycle-style demonstration PD by rating grade. "
-    "Values are configurable assumptions, not validated model parameters."
+    "Demonstrations-PD 12M (durch den Zyklus, TTC-artig) je Ratingstufe. "
+    "Die Werte sind konfigurierbare Annahmen, keine validierten Modellparameter."
 )
 
 
