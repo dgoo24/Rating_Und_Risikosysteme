@@ -61,10 +61,13 @@ _BRAND_CSS = """
     border: 1px solid rgba(255, 255, 255, 0.7); padding: 3px 10px; border-radius: 999px;
     text-transform: uppercase; white-space: nowrap;
 }
-.rr-scope-label {
-    color: #E6001E; font-weight: 700; font-size: 0.78rem; letter-spacing: 1.6px;
-    text-transform: uppercase; margin: 0 0 2px 0;
+.rr-scope-title {
+    display: flex; align-items: center; gap: 9px;
+    color: #262626; font-size: 0.8rem; font-weight: 700;
+    letter-spacing: 1.6px; text-transform: uppercase; margin: 8px 0 0 0;
 }
+.rr-scope-accent {width: 4px; height: 16px; border-radius: 2px; background: #E6001E; flex: 0 0 auto;}
+.rr-scope-names {color: #6B6B6B; font-size: 0.77rem; margin: 0 0 4px 0; line-height: 1.55;}
 [data-testid="stMetric"] {border-color: #F1C9CE !important;}
 [data-testid="stMetricLabel"] p {color: #454957; font-weight: 600;}
 [data-testid="stMetricValue"] {color: #262626; font-weight: 700;}
@@ -111,11 +114,6 @@ def bank_names(data: dict[str, pd.DataFrame]) -> dict[str, str]:
     return dict(zip(institutions["bank_id"].astype(str), institutions["bank_name"].astype(str)))
 
 
-def bank_label_map(data: dict[str, pd.DataFrame]) -> dict[str, str]:
-    names = bank_names(data)
-    return {bank_id: f"{bank_id} - {names.get(bank_id, bank_id)}" for bank_id in all_banks(data)}
-
-
 def render_brand_header() -> None:
     """Rendert den Sparkasse-inspirierten Marken-Header und die Basis-Styles."""
     st.markdown(_BRAND_CSS + _BRAND_HTML, unsafe_allow_html=True)
@@ -135,50 +133,99 @@ def render_footer(data: dict[str, pd.DataFrame]) -> None:
     )
 
 
+_DE_MONTHS = {
+    1: "Jan.", 2: "Feb.", 3: "Mär.", 4: "Apr.", 5: "Mai", 6: "Jun.",
+    7: "Jul.", 8: "Aug.", 9: "Sep.", 10: "Okt.", 11: "Nov.", 12: "Dez.",
+}
+
+
+def _stichtag_label(value: object) -> str:
+    """Kompakte Monats-/Jahresbezeichnung für die Stichtags-Pills (z. B. 'Sep. 2026')."""
+    try:
+        moment = pd.Timestamp(value)
+        return f"{_DE_MONTHS.get(moment.month, '')} {moment.year}"
+    except (TypeError, ValueError):
+        return str(value)
+
+
+def _reset_scope() -> None:
+    """Setzt die globalen Umfangsfilter auf die Standardwerte zurück."""
+    for key in ("global_reporting_date", "global_bank_ids", "global_sectors"):
+        st.session_state.pop(key, None)
+
+
 def render_scope_filters(data: dict[str, pd.DataFrame]) -> None:
-    """Rendert die globalen Umfangsfilter im Hauptbereich (statt Seitenleiste)."""
+    """Rendert die globalen Umfangsfilter als kompakte Pill-Auswahl im Hauptbereich."""
     dates = reporting_dates(data.get("exposures"))
     banks = all_banks(data)
     sectors = sorted(
         data["exposures"]["industry_sector"].dropna().astype(str).unique().tolist()
     ) if not data.get("exposures", pd.DataFrame()).empty else []
+    if not dates:
+        st.error("Es sind keine Quartalsstichtage verfügbar.")
+        st.stop()
+
+    names = bank_names(data)
+    current_date = st.session_state.get("global_reporting_date")
+    default_date = current_date if current_date in dates else dates[-1]
+    current_banks = st.session_state.get("global_bank_ids")
+    default_banks = [bank for bank in (current_banks or banks) if bank in banks]
 
     with st.container(border=True):
-        st.markdown('<p class="rr-scope-label">Berichtsumfang</p>', unsafe_allow_html=True)
-        if not dates:
-            st.error("Es sind keine Quartalsstichtage verfügbar.")
-            st.stop()
-        current = st.session_state.get("global_reporting_date")
-        index = dates.index(current) if current in dates else len(dates) - 1
-        labels = bank_label_map(data)
-        current_banks = st.session_state.get("global_bank_ids")
-        default_banks = [bank for bank in (current_banks or banks) if bank in banks]
-        col_date, col_banks, col_sectors = st.columns([1, 2, 2])
-        with col_date:
-            st.selectbox(
-                "Berichtsstichtag",
-                options=dates,
-                index=index,
-                format_func=fmt_date_de,
-                key="global_reporting_date",
+        head_left, head_right = st.columns([0.76, 0.24])
+        head_left.markdown(
+            '<p class="rr-scope-title"><span class="rr-scope-accent"></span>Berichtsumfang</p>',
+            unsafe_allow_html=True,
+        )
+        head_right.button(
+            "Zurücksetzen",
+            key="scope_reset",
+            on_click=_reset_scope,
+            icon=":material/restart_alt:",
+            type="tertiary",
+            width="stretch",
+        )
+
+        st.pills(
+            "Berichtsstichtag",
+            options=dates,
+            default=default_date,
+            required=True,
+            format_func=_stichtag_label,
+            key="global_reporting_date",
+            help="Alle Ansichten folgen dem ausgewählten Berichtsstichtag.",
+            wrap=True,
+        )
+        selected_banks = st.pills(
+            "Institute",
+            options=banks,
+            selection_mode="multi",
+            default=default_banks,
+            key="global_bank_ids",
+            help="Mehrfachauswahl – eine leere Auswahl gilt als gesamte Berichtsgemeinschaft.",
+            wrap=True,
+        ) or []
+        if selected_banks:
+            st.markdown(
+                '<p class="rr-scope-names">'
+                + " · ".join(names.get(bank, bank) for bank in selected_banks)
+                + "</p>",
+                unsafe_allow_html=True,
             )
-        with col_banks:
-            st.multiselect(
-                "Institute",
-                options=banks,
-                default=default_banks,
-                format_func=lambda bank_id: labels.get(bank_id, bank_id),
-                key="global_bank_ids",
-                help="Eine leere Auswahl wird als gesamte Berichtsgemeinschaft interpretiert.",
+        else:
+            st.markdown(
+                '<p class="rr-scope-names">Leere Auswahl – alle Institute der Berichtsgemeinschaft.</p>',
+                unsafe_allow_html=True,
             )
-        with col_sectors:
-            st.multiselect(
-                "Wirtschaftssektoren",
-                options=sectors,
-                default=st.session_state.get("global_sectors", []),
-                placeholder="Alle Sektoren",
-                key="global_sectors",
-            )
+        st.pills(
+            "Wirtschaftssektoren",
+            options=sectors,
+            selection_mode="multi",
+            default=st.session_state.get("global_sectors") or None,
+            key="global_sectors",
+            help="Mehrfachauswahl – eine leere Auswahl umfasst alle Wirtschaftssektoren.",
+            wrap=True,
+        )
 
 
 def scope(data: dict[str, pd.DataFrame] | None = None) -> tuple[pd.Timestamp, list[str], list[str]]:
