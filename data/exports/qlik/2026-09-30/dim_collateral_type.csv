@@ -1,0 +1,4 @@
+collateral_type,haircut
+REAL_ESTATE,0.2
+FINANCIAL_COLLATERAL,0.05
+OTHER,0.4

@@ -1,0 +1,31 @@
+[server]
+headless = true
+runOnSave = false
+maxUploadSize = 50
+
+[browser]
+gatherUsageStats = false
+
+[theme]
+base = "light"
+primaryColor = "#0B5CAD"
+backgroundColor = "#FFFFFF"
+secondaryBackgroundColor = "#F4F7FB"
+textColor = "#172033"
+linkColor = "#0B5CAD"
+borderColor = "#D8E0EA"
+showWidgetBorder = true
+showSidebarBorder = true
+baseRadius = "medium"
+buttonRadius = "medium"
+font = "sans-serif"
+headingFontSizes = ["30px", "24px", "20px", "17px", "15px", "13px"]
+headingFontWeights = [650, 650, 600, 600, 600, 600]
+baseFontSize = 15
+chartCategoricalColors = ["#0B5CAD", "#0F8A7E", "#D08A1D", "#A4467A", "#7A5AB5", "#C0504D", "#667085"]
+chartSequentialColors = ["#F4F7FB", "#DCE8F7", "#BDD3ED", "#9BBCE3", "#78A3D6", "#568AC9", "#3871B4", "#1E589A", "#0B5CAD", "#073E78"]
+greenColor = "#13795B"
+redColor = "#B42318"
+orangeColor = "#B25E09"
+blueColor = "#0B5CAD"
+grayColor = "#667085"

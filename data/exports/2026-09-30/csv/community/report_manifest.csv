@@ -1,0 +1,12 @@
+﻿key,value
+disclaimer,SYNTHETIC DEMONSTRATION DATA - NOT REGULATORY REPORTING AND NOT REAL SPARKASSEN OR CUSTOMER INFORMATION
+reporting_date,2026-09-30
+scope,Reporting Community
+peer_group,COMMUNITY
+generated_at,2026-11-11 00:57:17
+pipeline_run,RUN-20261111005418-7B456F2D
+quality_score,99.78
+batch_count,20
+rows_received,36003
+rows_valid,35924
+rows_rejected,79

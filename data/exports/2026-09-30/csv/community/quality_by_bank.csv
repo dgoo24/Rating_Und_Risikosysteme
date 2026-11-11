@@ -1,0 +1,6 @@
+﻿bank_id,batches,rows_received,rows_valid,rows_rejected,quality_score,error_findings,warning_findings
+SSK001,4,7722,7707,15,99.81,16,0
+SSK002,4,5688,5672,16,99.72,16,0
+SSK003,4,9624,9607,17,99.82,19,1
+SSK004,4,5187,5173,14,99.73,15,1
+SSK005,4,7782,7765,17,99.78,18,0

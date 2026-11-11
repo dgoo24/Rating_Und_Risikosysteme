@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Environment / secrets
+.env
+
+# Pipeline logs (regenerated on every run)
+logs/
+
+# Regenerable synthetic landing zone (deterministic, seed 42):
+#   python -m synthetic_data.generate_data
+data/synthetic/landing/
+
+# Raw staging area (empty until an ETL run)
+data/raw/
+
+# DuckDB write-ahead logs
+*.wal
+
+# OS / IDE
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

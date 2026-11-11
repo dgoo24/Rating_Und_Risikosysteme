@@ -1,0 +1,30 @@
+﻿rule_id,rule_name,dataset_type,category,severity,findings,affected_records
+COMP-EXP-005,Rating grade is required,exposures,Completeness,ERROR,5,5
+CONS-EXP-002,Rating grade is on the configured scale,exposures,Consistency,ERROR,5,5
+CONS-RAT-003,Rating history exposure exists,rating_history,Consistency,ERROR,5,5
+PLAUS-COL-001,Collateral value is non-negative,collateral,Plausibility,ERROR,5,5
+PLAUS-EXP-001,EAD is non-negative,exposures,Plausibility,ERROR,5,5
+PLAUS-REC-001,Recovery amount is non-negative,recovery_cashflows,Plausibility,ERROR,5,5
+UNIQ-COL-001,Collateral valuation is unique within batch,collateral,Uniqueness,ERROR,5,5
+UNIQ-EXP-001,Exposure is unique within the import batch,exposures,Uniqueness,ERROR,5,5
+UNIQ-RAT-001,Rating observation is unique within batch,rating_history,Uniqueness,ERROR,5,5
+UNIQ-REC-001,Cashflow ID is unique within batch,recovery_cashflows,Uniqueness,ERROR,5,5
+UNIQ-REC-003,Recovery business record is not duplicated,recovery_cashflows,Uniqueness,ERROR,5,5
+COMP-EXP-002,Bank ID is required,exposures,Completeness,ERROR,4,4
+PLAUS-REC-003,Recoveries do not exceed exposure at default,recovery_cashflows,Plausibility,ERROR,4,4
+COMP-COL-004,Collateral value is required,collateral,Completeness,ERROR,3,3
+CONS-RAT-002,Rating history grade is valid,rating_history,Consistency,ERROR,3,3
+COMP-EXP-003,Reporting snapshot date is required,exposures,Completeness,ERROR,2,2
+COMP-RAT-004,Rating history grade is required,rating_history,Completeness,ERROR,2,2
+CONS-COL-003,Collateral exposure exists,collateral,Consistency,ERROR,2,2
+CONS-REC-002,Recovery exposure exists,recovery_cashflows,Consistency,ERROR,2,2
+COMP-EXP-004,Exposure at default is required,exposures,Completeness,ERROR,1,1
+CONS-COL-002,Collateral currency is supported,collateral,Consistency,ERROR,1,1
+CONS-EXP-001,Bank exists in the institution master,exposures,Consistency,ERROR,1,1
+CONS-EXP-003,Currency is supported,exposures,Consistency,ERROR,1,1
+PLAUS-COL-002,Collateral valuation is not in the future,collateral,Plausibility,ERROR,1,1
+PLAUS-EXP-003,Maturity follows origination,exposures,Plausibility,ERROR,1,1
+PLAUS-EXP-006,Reporting date is not in the future,exposures,Plausibility,ERROR,1,1
+PLAUS-REC-002,Recovery payment is not in the future,recovery_cashflows,Plausibility,ERROR,1,1
+CONS-EXP-004,Reporting date is a quarter end,exposures,Consistency,WARNING,1,1
+PLAUS-COL-003,Collateral valuation is not stale,collateral,Plausibility,WARNING,1,1

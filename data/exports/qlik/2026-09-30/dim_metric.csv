@@ -1,0 +1,16 @@
+metric_id,metric_name,module,unit,higher_is_better,description
+PD_12M_WEIGHTED,Exposure-weighted PD 12M,rating,ratio,False,Sum(EAD x configured PD) / Sum(EAD).
+SHARE_IG_A_B,"Investment-grade share (A-B, EAD)",rating,ratio,True,EAD rated A or B / total rated EAD.
+SHARE_RATING_A,Rating A share (EAD),rating,ratio,,EAD rated A / total rated EAD.
+SHARE_RATING_B,Rating B share (EAD),rating,ratio,,EAD rated B / total rated EAD.
+SHARE_RATING_C,Rating C share (EAD),rating,ratio,,EAD rated C / total rated EAD.
+SHARE_RATING_D,Rating D share (EAD),rating,ratio,,EAD rated D / total rated EAD.
+SHARE_RATING_E,Rating E share (EAD),rating,ratio,,EAD rated E / total rated EAD.
+SHARE_RATING_F,Rating F share (EAD),rating,ratio,,EAD rated F / total rated EAD.
+DEFAULT_RATE_12M,Observed 12M default rate (count),rating,ratio,False,Defaults in the 12M cohort / performing exposures at observation start.
+RATING_UPGRADE_RATE,Rating upgrade rate,rating,ratio,True,Upgrades / matched rating observations.
+RATING_DOWNGRADE_RATE,Rating downgrade rate,rating,ratio,False,Downgrades / matched rating observations.
+RECOVERY_RATE_12M,Observed 12M recovery rate (EAD-weighted),loss,ratio,True,Recovery cashflows / EAD at default for the 12M cohort.
+LOSS_RATE_12M,Observed 12M loss rate (EAD-weighted),loss,ratio,False,Loss amount / EAD at default for the 12M cohort.
+COLLATERAL_COVERAGE,Adjusted collateral coverage,loss,ratio,True,Haircut-adjusted collateral value / current EAD.
+SECURED_EAD_SHARE,Secured EAD share (capped),loss,ratio,True,Secured EAD (capped at exposure EAD) / current EAD.

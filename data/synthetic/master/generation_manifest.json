@@ -1,0 +1,834 @@
+{
+  "disclaimer": "SYNTHETIC DEMONSTRATION DATA - NOT REGULATORY REPORTING AND NOT REAL SPARKASSEN OR CUSTOMER INFORMATION",
+  "generated_at": "2026-11-11T00:54:14+00:00Z",
+  "seed": 20261110,
+  "snapshot_dates": [
+    "2024-09-30T00:00:00",
+    "2024-12-31T00:00:00",
+    "2025-03-31T00:00:00",
+    "2025-06-30T00:00:00",
+    "2025-09-30T00:00:00",
+    "2025-12-31T00:00:00",
+    "2026-03-31T00:00:00",
+    "2026-06-30T00:00:00",
+    "2026-09-30T00:00:00"
+  ],
+  "institutions": [
+    {
+      "bank_id": "SSK001",
+      "bank_name": "Muster-Sparkasse Nord (fiktiv)",
+      "source_system": "FICTIONAL_DEMO_SSK001",
+      "exposures": 3467,
+      "rating_history": 3467,
+      "collateral": 682,
+      "recovery_cashflows": 99,
+      "defaulted_exposures": 28,
+      "snapshots": 9,
+      "data_quality_defects_injected": 15
+    },
+    {
+      "bank_id": "SSK002",
+      "bank_name": "Muster-Sparkasse Süd (fiktiv)",
+      "source_system": "FICTIONAL_DEMO_SSK002",
+      "exposures": 2566,
+      "rating_history": 2566,
+      "collateral": 455,
+      "recovery_cashflows": 95,
+      "defaulted_exposures": 26,
+      "snapshots": 9,
+      "data_quality_defects_injected": 16
+    },
+    {
+      "bank_id": "SSK003",
+      "bank_name": "Muster-Sparkasse West (fiktiv)",
+      "source_system": "FICTIONAL_DEMO_SSK003",
+      "exposures": 4385,
+      "rating_history": 4385,
+      "collateral": 545,
+      "recovery_cashflows": 301,
+      "defaulted_exposures": 104,
+      "snapshots": 9,
+      "data_quality_defects_injected": 18
+    },
+    {
+      "bank_id": "SSK004",
+      "bank_name": "Muster-Sparkasse Mitte (fiktiv)",
+      "source_system": "FICTIONAL_DEMO_SSK004",
+      "exposures": 2321,
+      "rating_history": 2321,
+      "collateral": 524,
+      "recovery_cashflows": 15,
+      "defaulted_exposures": 5,
+      "snapshots": 9,
+      "data_quality_defects_injected": 15
+    },
+    {
+      "bank_id": "SSK005",
+      "bank_name": "Muster-Sparkasse Ost (fiktiv)",
+      "source_system": "FICTIONAL_DEMO_SSK005",
+      "exposures": 3556,
+      "rating_history": 3556,
+      "collateral": 513,
+      "recovery_cashflows": 151,
+      "defaulted_exposures": 51,
+      "snapshots": 9,
+      "data_quality_defects_injected": 17
+    }
+  ],
+  "injected_quality_defects": [
+    {
+      "bank_id": "SSK001",
+      "dataset_type": "exposures",
+      "issue_type": "duplicate_exposure",
+      "record_id": "EXP-SSK001-00414",
+      "expected_rule_id": "UNIQ-EXP-001",
+      "severity": "ERROR",
+      "source_file": "sparkasse_a_exposures.csv"
+    },
+    {
+      "bank_id": "SSK001",
+      "dataset_type": "exposures",
+      "issue_type": "missing_rating",
+      "record_id": "EXP-SSK001-00483",
+      "expected_rule_id": "COMP-EXP-005",
+      "severity": "ERROR",
+      "source_file": "sparkasse_a_exposures.csv"
+    },
+    {
+      "bank_id": "SSK001",
+      "dataset_type": "exposures",
+      "issue_type": "invalid_rating",
+      "record_id": "EXP-SSK001-00280",
+      "expected_rule_id": "CONS-EXP-002",
+      "severity": "ERROR",
+      "source_file": "sparkasse_a_exposures.csv"
+    },
+    {
+      "bank_id": "SSK001",
+      "dataset_type": "exposures",
+      "issue_type": "negative_ead",
+      "record_id": "EXP-SSK001-00381",
+      "expected_rule_id": "PLAUS-EXP-001",
+      "severity": "ERROR",
+      "source_file": "sparkasse_a_exposures.csv"
+    },
+    {
+      "bank_id": "SSK001",
+      "dataset_type": "exposures",
+      "issue_type": "missing_bank_id",
+      "record_id": "EXP-SSK001-00099",
+      "expected_rule_id": "COMP-EXP-002",
+      "severity": "ERROR",
+      "source_file": "sparkasse_a_exposures.csv"
+    },
+    {
+      "bank_id": "SSK001",
+      "dataset_type": "exposures",
+      "issue_type": "missing_snapshot_date",
+      "record_id": "EXP-SSK001-00019",
+      "expected_rule_id": "COMP-EXP-003",
+      "severity": "ERROR",
+      "source_file": "sparkasse_a_exposures.csv"
+    },
+    {
+      "bank_id": "SSK001",
+      "dataset_type": "rating_history",
+      "issue_type": "duplicate_rating_record",
+      "record_id": "EXP-SSK001-00134",
+      "expected_rule_id": "UNIQ-RAT-001",
+      "severity": "ERROR",
+      "source_file": "sparkasse_a_rating_history.csv"
+    },
+    {
+      "bank_id": "SSK001",
+      "dataset_type": "rating_history",
+      "issue_type": "invalid_rating",
+      "record_id": "EXP-SSK001-00468",
+      "expected_rule_id": "CONS-RAT-002",
+      "severity": "ERROR",
+      "source_file": "sparkasse_a_rating_history.csv"
+    },
+    {
+      "bank_id": "SSK001",
+      "dataset_type": "rating_history",
+      "issue_type": "orphan_exposure",
+      "record_id": "EXP-GHOST-SSK001-01",
+      "expected_rule_id": "CONS-RAT-003",
+      "severity": "ERROR",
+      "source_file": "sparkasse_a_rating_history.csv"
+    },
+    {
+      "bank_id": "SSK001",
+      "dataset_type": "collateral",
+      "issue_type": "duplicate_collateral",
+      "record_id": "COL-SSK001-00262",
+      "expected_rule_id": "UNIQ-COL-001",
+      "severity": "ERROR",
+      "source_file": "sparkasse_a_collateral.csv"
+    },
+    {
+      "bank_id": "SSK001",
+      "dataset_type": "collateral",
+      "issue_type": "negative_collateral_value",
+      "record_id": "COL-SSK001-00044",
+      "expected_rule_id": "PLAUS-COL-001",
+      "severity": "ERROR",
+      "source_file": "sparkasse_a_collateral.csv"
+    },
+    {
+      "bank_id": "SSK001",
+      "dataset_type": "collateral",
+      "issue_type": "orphan_exposure",
+      "record_id": "COL-GHOST-SSK001-01",
+      "expected_rule_id": "CONS-COL-003",
+      "severity": "ERROR",
+      "source_file": "sparkasse_a_collateral.csv"
+    },
+    {
+      "bank_id": "SSK001",
+      "dataset_type": "recovery_cashflows",
+      "issue_type": "duplicate_cashflow_id",
+      "record_id": "CF-SSK001-000036",
+      "expected_rule_id": "UNIQ-REC-001",
+      "severity": "ERROR",
+      "source_file": "sparkasse_a_recoveries.csv"
+    },
+    {
+      "bank_id": "SSK001",
+      "dataset_type": "recovery_cashflows",
+      "issue_type": "negative_recovery",
+      "record_id": "CF-SSK001-000092",
+      "expected_rule_id": "PLAUS-REC-001",
+      "severity": "ERROR",
+      "source_file": "sparkasse_a_recoveries.csv"
+    },
+    {
+      "bank_id": "SSK001",
+      "dataset_type": "recovery_cashflows",
+      "issue_type": "orphan_exposure",
+      "record_id": "CF-GHOST-SSK001-01",
+      "expected_rule_id": "CONS-REC-002",
+      "severity": "ERROR",
+      "source_file": "sparkasse_a_recoveries.csv"
+    },
+    {
+      "bank_id": "SSK002",
+      "dataset_type": "exposures",
+      "issue_type": "duplicate_exposure",
+      "record_id": "EXP-SSK002-00236",
+      "expected_rule_id": "UNIQ-EXP-001",
+      "severity": "ERROR",
+      "source_file": "sparkasse_b_credit_data.xlsx"
+    },
+    {
+      "bank_id": "SSK002",
+      "dataset_type": "exposures",
+      "issue_type": "missing_rating",
+      "record_id": "EXP-SSK002-00329",
+      "expected_rule_id": "COMP-EXP-005",
+      "severity": "ERROR",
+      "source_file": "sparkasse_b_credit_data.xlsx"
+    },
+    {
+      "bank_id": "SSK002",
+      "dataset_type": "exposures",
+      "issue_type": "invalid_rating",
+      "record_id": "EXP-SSK002-00340",
+      "expected_rule_id": "CONS-EXP-002",
+      "severity": "ERROR",
+      "source_file": "sparkasse_b_credit_data.xlsx"
+    },
+    {
+      "bank_id": "SSK002",
+      "dataset_type": "exposures",
+      "issue_type": "negative_ead",
+      "record_id": "EXP-SSK002-00182",
+      "expected_rule_id": "PLAUS-EXP-001",
+      "severity": "ERROR",
+      "source_file": "sparkasse_b_credit_data.xlsx"
+    },
+    {
+      "bank_id": "SSK002",
+      "dataset_type": "exposures",
+      "issue_type": "missing_bank_id",
+      "record_id": "EXP-SSK002-00331",
+      "expected_rule_id": "COMP-EXP-002",
+      "severity": "ERROR",
+      "source_file": "sparkasse_b_credit_data.xlsx"
+    },
+    {
+      "bank_id": "SSK002",
+      "dataset_type": "exposures",
+      "issue_type": "invalid_bank_id",
+      "record_id": "EXP-SSK002-00228",
+      "expected_rule_id": "CONS-EXP-001",
+      "severity": "ERROR",
+      "source_file": "sparkasse_b_credit_data.xlsx"
+    },
+    {
+      "bank_id": "SSK002",
+      "dataset_type": "rating_history",
+      "issue_type": "duplicate_rating_record",
+      "record_id": "EXP-SSK002-00328",
+      "expected_rule_id": "UNIQ-RAT-001",
+      "severity": "ERROR",
+      "source_file": "sparkasse_b_rating_history.xlsx"
+    },
+    {
+      "bank_id": "SSK002",
+      "dataset_type": "rating_history",
+      "issue_type": "missing_rating",
+      "record_id": "EXP-SSK002-00282",
+      "expected_rule_id": "COMP-RAT-004",
+      "severity": "ERROR",
+      "source_file": "sparkasse_b_rating_history.xlsx"
+    },
+    {
+      "bank_id": "SSK002",
+      "dataset_type": "rating_history",
+      "issue_type": "orphan_exposure",
+      "record_id": "EXP-GHOST-SSK002-01",
+      "expected_rule_id": "CONS-RAT-003",
+      "severity": "ERROR",
+      "source_file": "sparkasse_b_rating_history.xlsx"
+    },
+    {
+      "bank_id": "SSK002",
+      "dataset_type": "collateral",
+      "issue_type": "duplicate_collateral",
+      "record_id": "COL-SSK002-00253",
+      "expected_rule_id": "UNIQ-COL-001",
+      "severity": "ERROR",
+      "source_file": "sparkasse_b_securities.xlsx"
+    },
+    {
+      "bank_id": "SSK002",
+      "dataset_type": "collateral",
+      "issue_type": "negative_collateral_value",
+      "record_id": "COL-SSK002-00116",
+      "expected_rule_id": "PLAUS-COL-001",
+      "severity": "ERROR",
+      "source_file": "sparkasse_b_securities.xlsx"
+    },
+    {
+      "bank_id": "SSK002",
+      "dataset_type": "collateral",
+      "issue_type": "missing_collateral_value",
+      "record_id": "COL-SSK002-00107",
+      "expected_rule_id": "COMP-COL-004",
+      "severity": "ERROR",
+      "source_file": "sparkasse_b_securities.xlsx"
+    },
+    {
+      "bank_id": "SSK002",
+      "dataset_type": "collateral",
+      "issue_type": "future_valuation",
+      "record_id": "COL-SSK002-00377",
+      "expected_rule_id": "PLAUS-COL-002",
+      "severity": "ERROR",
+      "source_file": "sparkasse_b_securities.xlsx"
+    },
+    {
+      "bank_id": "SSK002",
+      "dataset_type": "recovery_cashflows",
+      "issue_type": "duplicate_cashflow_id",
+      "record_id": "CF-SSK002-000045",
+      "expected_rule_id": "UNIQ-REC-001",
+      "severity": "ERROR",
+      "source_file": "sparkasse_b_recoveries.xlsx"
+    },
+    {
+      "bank_id": "SSK002",
+      "dataset_type": "recovery_cashflows",
+      "issue_type": "negative_recovery",
+      "record_id": "CF-SSK002-000018",
+      "expected_rule_id": "PLAUS-REC-001",
+      "severity": "ERROR",
+      "source_file": "sparkasse_b_recoveries.xlsx"
+    },
+    {
+      "bank_id": "SSK002",
+      "dataset_type": "recovery_cashflows",
+      "issue_type": "recovery_exceeds_ead",
+      "record_id": "EXP-SSK002-00226",
+      "expected_rule_id": "PLAUS-REC-003",
+      "severity": "ERROR",
+      "source_file": "sparkasse_b_recoveries.xlsx"
+    },
+    {
+      "bank_id": "SSK003",
+      "dataset_type": "exposures",
+      "issue_type": "duplicate_exposure",
+      "record_id": "EXP-SSK003-00446",
+      "expected_rule_id": "UNIQ-EXP-001",
+      "severity": "ERROR",
+      "source_file": "sparkasse_c_portfolio.csv"
+    },
+    {
+      "bank_id": "SSK003",
+      "dataset_type": "exposures",
+      "issue_type": "missing_rating",
+      "record_id": "EXP-SSK003-00496",
+      "expected_rule_id": "COMP-EXP-005",
+      "severity": "ERROR",
+      "source_file": "sparkasse_c_portfolio.csv"
+    },
+    {
+      "bank_id": "SSK003",
+      "dataset_type": "exposures",
+      "issue_type": "invalid_rating",
+      "record_id": "EXP-SSK003-00347",
+      "expected_rule_id": "CONS-EXP-002",
+      "severity": "ERROR",
+      "source_file": "sparkasse_c_portfolio.csv"
+    },
+    {
+      "bank_id": "SSK003",
+      "dataset_type": "exposures",
+      "issue_type": "negative_ead",
+      "record_id": "EXP-SSK003-00587",
+      "expected_rule_id": "PLAUS-EXP-001",
+      "severity": "ERROR",
+      "source_file": "sparkasse_c_portfolio.csv"
+    },
+    {
+      "bank_id": "SSK003",
+      "dataset_type": "exposures",
+      "issue_type": "missing_bank_id",
+      "record_id": "EXP-SSK003-00220",
+      "expected_rule_id": "COMP-EXP-002",
+      "severity": "ERROR",
+      "source_file": "sparkasse_c_portfolio.csv"
+    },
+    {
+      "bank_id": "SSK003",
+      "dataset_type": "exposures",
+      "issue_type": "missing_ead",
+      "record_id": "EXP-SSK003-00574",
+      "expected_rule_id": "COMP-EXP-004",
+      "severity": "ERROR",
+      "source_file": "sparkasse_c_portfolio.csv"
+    },
+    {
+      "bank_id": "SSK003",
+      "dataset_type": "exposures",
+      "issue_type": "future_snapshot_date",
+      "record_id": "EXP-SSK003-00267",
+      "expected_rule_id": "PLAUS-EXP-006",
+      "severity": "ERROR",
+      "source_file": "sparkasse_c_portfolio.csv"
+    },
+    {
+      "bank_id": "SSK003",
+      "dataset_type": "exposures",
+      "issue_type": "non_quarter_snapshot",
+      "record_id": "EXP-SSK003-00122",
+      "expected_rule_id": "CONS-EXP-004",
+      "severity": "WARNING",
+      "source_file": "sparkasse_c_portfolio.csv"
+    },
+    {
+      "bank_id": "SSK003",
+      "dataset_type": "rating_history",
+      "issue_type": "duplicate_rating_record",
+      "record_id": "EXP-SSK003-00604",
+      "expected_rule_id": "UNIQ-RAT-001",
+      "severity": "ERROR",
+      "source_file": "sparkasse_c_ratings.csv"
+    },
+    {
+      "bank_id": "SSK003",
+      "dataset_type": "rating_history",
+      "issue_type": "invalid_rating",
+      "record_id": "EXP-SSK003-00147",
+      "expected_rule_id": "CONS-RAT-002",
+      "severity": "ERROR",
+      "source_file": "sparkasse_c_ratings.csv"
+    },
+    {
+      "bank_id": "SSK003",
+      "dataset_type": "rating_history",
+      "issue_type": "orphan_exposure",
+      "record_id": "EXP-GHOST-SSK003-01",
+      "expected_rule_id": "CONS-RAT-003",
+      "severity": "ERROR",
+      "source_file": "sparkasse_c_ratings.csv"
+    },
+    {
+      "bank_id": "SSK003",
+      "dataset_type": "collateral",
+      "issue_type": "duplicate_collateral",
+      "record_id": "COL-SSK003-00110",
+      "expected_rule_id": "UNIQ-COL-001",
+      "severity": "ERROR",
+      "source_file": "sparkasse_c_collateral.csv"
+    },
+    {
+      "bank_id": "SSK003",
+      "dataset_type": "collateral",
+      "issue_type": "negative_collateral_value",
+      "record_id": "COL-SSK003-00142",
+      "expected_rule_id": "PLAUS-COL-001",
+      "severity": "ERROR",
+      "source_file": "sparkasse_c_collateral.csv"
+    },
+    {
+      "bank_id": "SSK003",
+      "dataset_type": "collateral",
+      "issue_type": "orphan_exposure",
+      "record_id": "COL-GHOST-SSK003-01",
+      "expected_rule_id": "CONS-COL-003",
+      "severity": "ERROR",
+      "source_file": "sparkasse_c_collateral.csv"
+    },
+    {
+      "bank_id": "SSK003",
+      "dataset_type": "recovery_cashflows",
+      "issue_type": "duplicate_cashflow_id",
+      "record_id": "CF-SSK003-000194",
+      "expected_rule_id": "UNIQ-REC-001",
+      "severity": "ERROR",
+      "source_file": "sparkasse_c_recoveries.csv"
+    },
+    {
+      "bank_id": "SSK003",
+      "dataset_type": "recovery_cashflows",
+      "issue_type": "negative_recovery",
+      "record_id": "CF-SSK003-000244",
+      "expected_rule_id": "PLAUS-REC-001",
+      "severity": "ERROR",
+      "source_file": "sparkasse_c_recoveries.csv"
+    },
+    {
+      "bank_id": "SSK003",
+      "dataset_type": "recovery_cashflows",
+      "issue_type": "recovery_exceeds_ead",
+      "record_id": "EXP-SSK003-00075",
+      "expected_rule_id": "PLAUS-REC-003",
+      "severity": "ERROR",
+      "source_file": "sparkasse_c_recoveries.csv"
+    },
+    {
+      "bank_id": "SSK003",
+      "dataset_type": "recovery_cashflows",
+      "issue_type": "future_payment_date",
+      "record_id": "CF-SSK003-000303",
+      "expected_rule_id": "PLAUS-REC-002",
+      "severity": "ERROR",
+      "source_file": "sparkasse_c_recoveries.csv"
+    },
+    {
+      "bank_id": "SSK004",
+      "dataset_type": "exposures",
+      "issue_type": "duplicate_exposure",
+      "record_id": "EXP-SSK004-00263",
+      "expected_rule_id": "UNIQ-EXP-001",
+      "severity": "ERROR",
+      "source_file": "sparkasse_d_engagements.xlsx"
+    },
+    {
+      "bank_id": "SSK004",
+      "dataset_type": "exposures",
+      "issue_type": "missing_rating",
+      "record_id": "EXP-SSK004-00158",
+      "expected_rule_id": "COMP-EXP-005",
+      "severity": "ERROR",
+      "source_file": "sparkasse_d_engagements.xlsx"
+    },
+    {
+      "bank_id": "SSK004",
+      "dataset_type": "exposures",
+      "issue_type": "invalid_rating",
+      "record_id": "EXP-SSK004-00231",
+      "expected_rule_id": "CONS-EXP-002",
+      "severity": "ERROR",
+      "source_file": "sparkasse_d_engagements.xlsx"
+    },
+    {
+      "bank_id": "SSK004",
+      "dataset_type": "exposures",
+      "issue_type": "negative_ead",
+      "record_id": "EXP-SSK004-00122",
+      "expected_rule_id": "PLAUS-EXP-001",
+      "severity": "ERROR",
+      "source_file": "sparkasse_d_engagements.xlsx"
+    },
+    {
+      "bank_id": "SSK004",
+      "dataset_type": "exposures",
+      "issue_type": "maturity_before_origination",
+      "record_id": "EXP-SSK004-00168",
+      "expected_rule_id": "PLAUS-EXP-003",
+      "severity": "ERROR",
+      "source_file": "sparkasse_d_engagements.xlsx"
+    },
+    {
+      "bank_id": "SSK004",
+      "dataset_type": "rating_history",
+      "issue_type": "duplicate_rating_record",
+      "record_id": "EXP-SSK004-00085",
+      "expected_rule_id": "UNIQ-RAT-001",
+      "severity": "ERROR",
+      "source_file": "sparkasse_d_ratings.csv"
+    },
+    {
+      "bank_id": "SSK004",
+      "dataset_type": "rating_history",
+      "issue_type": "missing_rating",
+      "record_id": "EXP-SSK004-00122",
+      "expected_rule_id": "COMP-RAT-004",
+      "severity": "ERROR",
+      "source_file": "sparkasse_d_ratings.csv"
+    },
+    {
+      "bank_id": "SSK004",
+      "dataset_type": "rating_history",
+      "issue_type": "orphan_exposure",
+      "record_id": "EXP-GHOST-SSK004-01",
+      "expected_rule_id": "CONS-RAT-003",
+      "severity": "ERROR",
+      "source_file": "sparkasse_d_ratings.csv"
+    },
+    {
+      "bank_id": "SSK004",
+      "dataset_type": "collateral",
+      "issue_type": "duplicate_collateral",
+      "record_id": "COL-SSK004-00022",
+      "expected_rule_id": "UNIQ-COL-001",
+      "severity": "ERROR",
+      "source_file": "sparkasse_d_security.xlsx"
+    },
+    {
+      "bank_id": "SSK004",
+      "dataset_type": "collateral",
+      "issue_type": "negative_collateral_value",
+      "record_id": "COL-SSK004-00215",
+      "expected_rule_id": "PLAUS-COL-001",
+      "severity": "ERROR",
+      "source_file": "sparkasse_d_security.xlsx"
+    },
+    {
+      "bank_id": "SSK004",
+      "dataset_type": "collateral",
+      "issue_type": "missing_collateral_value",
+      "record_id": "COL-SSK004-00219",
+      "expected_rule_id": "COMP-COL-004",
+      "severity": "ERROR",
+      "source_file": "sparkasse_d_security.xlsx"
+    },
+    {
+      "bank_id": "SSK004",
+      "dataset_type": "collateral",
+      "issue_type": "stale_valuation",
+      "record_id": "COL-SSK004-00213",
+      "expected_rule_id": "PLAUS-COL-003",
+      "severity": "WARNING",
+      "source_file": "sparkasse_d_security.xlsx"
+    },
+    {
+      "bank_id": "SSK004",
+      "dataset_type": "recovery_cashflows",
+      "issue_type": "duplicate_cashflow_id",
+      "record_id": "CF-SSK004-000012",
+      "expected_rule_id": "UNIQ-REC-001",
+      "severity": "ERROR",
+      "source_file": "sparkasse_d_recoveries.csv"
+    },
+    {
+      "bank_id": "SSK004",
+      "dataset_type": "recovery_cashflows",
+      "issue_type": "negative_recovery",
+      "record_id": "CF-SSK004-000010",
+      "expected_rule_id": "PLAUS-REC-001",
+      "severity": "ERROR",
+      "source_file": "sparkasse_d_recoveries.csv"
+    },
+    {
+      "bank_id": "SSK004",
+      "dataset_type": "recovery_cashflows",
+      "issue_type": "orphan_exposure",
+      "record_id": "CF-GHOST-SSK004-01",
+      "expected_rule_id": "CONS-REC-002",
+      "severity": "ERROR",
+      "source_file": "sparkasse_d_recoveries.csv"
+    },
+    {
+      "bank_id": "SSK005",
+      "dataset_type": "exposures",
+      "issue_type": "duplicate_exposure",
+      "record_id": "EXP-SSK005-00259",
+      "expected_rule_id": "UNIQ-EXP-001",
+      "severity": "ERROR",
+      "source_file": "sparkasse_e_source.duckdb"
+    },
+    {
+      "bank_id": "SSK005",
+      "dataset_type": "exposures",
+      "issue_type": "missing_rating",
+      "record_id": "EXP-SSK005-00049",
+      "expected_rule_id": "COMP-EXP-005",
+      "severity": "ERROR",
+      "source_file": "sparkasse_e_source.duckdb"
+    },
+    {
+      "bank_id": "SSK005",
+      "dataset_type": "exposures",
+      "issue_type": "invalid_rating",
+      "record_id": "EXP-SSK005-00041",
+      "expected_rule_id": "CONS-EXP-002",
+      "severity": "ERROR",
+      "source_file": "sparkasse_e_source.duckdb"
+    },
+    {
+      "bank_id": "SSK005",
+      "dataset_type": "exposures",
+      "issue_type": "negative_ead",
+      "record_id": "EXP-SSK005-00429",
+      "expected_rule_id": "PLAUS-EXP-001",
+      "severity": "ERROR",
+      "source_file": "sparkasse_e_source.duckdb"
+    },
+    {
+      "bank_id": "SSK005",
+      "dataset_type": "exposures",
+      "issue_type": "missing_bank_id",
+      "record_id": "EXP-SSK005-00015",
+      "expected_rule_id": "COMP-EXP-002",
+      "severity": "ERROR",
+      "source_file": "sparkasse_e_source.duckdb"
+    },
+    {
+      "bank_id": "SSK005",
+      "dataset_type": "exposures",
+      "issue_type": "missing_snapshot_date",
+      "record_id": "EXP-SSK005-00396",
+      "expected_rule_id": "COMP-EXP-003",
+      "severity": "ERROR",
+      "source_file": "sparkasse_e_source.duckdb"
+    },
+    {
+      "bank_id": "SSK005",
+      "dataset_type": "exposures",
+      "issue_type": "unsupported_currency",
+      "record_id": "EXP-SSK005-00144",
+      "expected_rule_id": "CONS-EXP-003",
+      "severity": "ERROR",
+      "source_file": "sparkasse_e_source.duckdb"
+    },
+    {
+      "bank_id": "SSK005",
+      "dataset_type": "rating_history",
+      "issue_type": "duplicate_rating_record",
+      "record_id": "EXP-SSK005-00028",
+      "expected_rule_id": "UNIQ-RAT-001",
+      "severity": "ERROR",
+      "source_file": "sparkasse_e_source.duckdb"
+    },
+    {
+      "bank_id": "SSK005",
+      "dataset_type": "rating_history",
+      "issue_type": "invalid_rating",
+      "record_id": "EXP-SSK005-00386",
+      "expected_rule_id": "CONS-RAT-002",
+      "severity": "ERROR",
+      "source_file": "sparkasse_e_source.duckdb"
+    },
+    {
+      "bank_id": "SSK005",
+      "dataset_type": "rating_history",
+      "issue_type": "orphan_exposure",
+      "record_id": "EXP-GHOST-SSK005-01",
+      "expected_rule_id": "CONS-RAT-003",
+      "severity": "ERROR",
+      "source_file": "sparkasse_e_source.duckdb"
+    },
+    {
+      "bank_id": "SSK005",
+      "dataset_type": "collateral",
+      "issue_type": "duplicate_collateral",
+      "record_id": "COL-SSK005-00148",
+      "expected_rule_id": "UNIQ-COL-001",
+      "severity": "ERROR",
+      "source_file": "sparkasse_e_source.duckdb"
+    },
+    {
+      "bank_id": "SSK005",
+      "dataset_type": "collateral",
+      "issue_type": "negative_collateral_value",
+      "record_id": "COL-SSK005-00014",
+      "expected_rule_id": "PLAUS-COL-001",
+      "severity": "ERROR",
+      "source_file": "sparkasse_e_source.duckdb"
+    },
+    {
+      "bank_id": "SSK005",
+      "dataset_type": "collateral",
+      "issue_type": "missing_collateral_value",
+      "record_id": "COL-SSK005-00406",
+      "expected_rule_id": "COMP-COL-004",
+      "severity": "ERROR",
+      "source_file": "sparkasse_e_source.duckdb"
+    },
+    {
+      "bank_id": "SSK005",
+      "dataset_type": "collateral",
+      "issue_type": "unsupported_currency",
+      "record_id": "COL-SSK005-00317",
+      "expected_rule_id": "CONS-COL-002",
+      "severity": "ERROR",
+      "source_file": "sparkasse_e_source.duckdb"
+    },
+    {
+      "bank_id": "SSK005",
+      "dataset_type": "recovery_cashflows",
+      "issue_type": "duplicate_cashflow_id",
+      "record_id": "CF-SSK005-000099",
+      "expected_rule_id": "UNIQ-REC-001",
+      "severity": "ERROR",
+      "source_file": "sparkasse_e_source.duckdb"
+    },
+    {
+      "bank_id": "SSK005",
+      "dataset_type": "recovery_cashflows",
+      "issue_type": "negative_recovery",
+      "record_id": "CF-SSK005-000104",
+      "expected_rule_id": "PLAUS-REC-001",
+      "severity": "ERROR",
+      "source_file": "sparkasse_e_source.duckdb"
+    },
+    {
+      "bank_id": "SSK005",
+      "dataset_type": "recovery_cashflows",
+      "issue_type": "recovery_exceeds_ead",
+      "record_id": "EXP-SSK005-00289",
+      "expected_rule_id": "PLAUS-REC-003",
+      "severity": "ERROR",
+      "source_file": "sparkasse_e_source.duckdb"
+    }
+  ],
+  "source_files": [
+    "C:\\Users\\dgoo2\\Rating_Und_Risikosysteme\\data\\synthetic\\landing\\sparkasse_a_collateral.csv",
+    "C:\\Users\\dgoo2\\Rating_Und_Risikosysteme\\data\\synthetic\\landing\\sparkasse_a_exposures.csv",
+    "C:\\Users\\dgoo2\\Rating_Und_Risikosysteme\\data\\synthetic\\landing\\sparkasse_a_rating_history.csv",
+    "C:\\Users\\dgoo2\\Rating_Und_Risikosysteme\\data\\synthetic\\landing\\sparkasse_a_recoveries.csv",
+    "C:\\Users\\dgoo2\\Rating_Und_Risikosysteme\\data\\synthetic\\landing\\sparkasse_b_credit_data.xlsx",
+    "C:\\Users\\dgoo2\\Rating_Und_Risikosysteme\\data\\synthetic\\landing\\sparkasse_b_rating_history.xlsx",
+    "C:\\Users\\dgoo2\\Rating_Und_Risikosysteme\\data\\synthetic\\landing\\sparkasse_b_recoveries.xlsx",
+    "C:\\Users\\dgoo2\\Rating_Und_Risikosysteme\\data\\synthetic\\landing\\sparkasse_b_securities.xlsx",
+    "C:\\Users\\dgoo2\\Rating_Und_Risikosysteme\\data\\synthetic\\landing\\sparkasse_c_collateral.csv",
+    "C:\\Users\\dgoo2\\Rating_Und_Risikosysteme\\data\\synthetic\\landing\\sparkasse_c_portfolio.csv",
+    "C:\\Users\\dgoo2\\Rating_Und_Risikosysteme\\data\\synthetic\\landing\\sparkasse_c_ratings.csv",
+    "C:\\Users\\dgoo2\\Rating_Und_Risikosysteme\\data\\synthetic\\landing\\sparkasse_c_recoveries.csv",
+    "C:\\Users\\dgoo2\\Rating_Und_Risikosysteme\\data\\synthetic\\landing\\sparkasse_d_engagements.xlsx",
+    "C:\\Users\\dgoo2\\Rating_Und_Risikosysteme\\data\\synthetic\\landing\\sparkasse_d_ratings.csv",
+    "C:\\Users\\dgoo2\\Rating_Und_Risikosysteme\\data\\synthetic\\landing\\sparkasse_d_recoveries.csv",
+    "C:\\Users\\dgoo2\\Rating_Und_Risikosysteme\\data\\synthetic\\landing\\sparkasse_d_security.xlsx",
+    "C:\\Users\\dgoo2\\Rating_Und_Risikosysteme\\data\\synthetic\\landing\\sparkasse_e_source.duckdb"
+  ],
+  "notes": [
+    "All institutions, exposures, collateral and cashflows are synthetic.",
+    "Clean canonical simulation files are stored in data/synthetic/master for verification.",
+    "Landing-zone files contain controlled defects for data-quality demonstration.",
+    "SSK005 supplies prepared tables in an isolated source DuckDB file."
+  ]
+}

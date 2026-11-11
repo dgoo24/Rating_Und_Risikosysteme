@@ -1,0 +1,7 @@
+﻿category,severity,findings,affected_records
+Uniqueness,ERROR,25,20
+Plausibility,ERROR,23,22
+Consistency,ERROR,20,20
+Completeness,ERROR,17,17
+Consistency,WARNING,1,1
+Plausibility,WARNING,1,1

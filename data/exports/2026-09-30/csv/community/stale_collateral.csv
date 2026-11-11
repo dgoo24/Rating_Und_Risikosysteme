@@ -1,0 +1,2 @@
+﻿collateral_id,exposure_id,bank_id,collateral_type,collateral_value,valuation_date,valuation_age_years,haircut,adjusted_collateral_value
+COL-SSK004-00213,EXP-SSK004-00213,SSK004,REAL_ESTATE,1313505.83,2018-01-01,8.744695414099931,0.2,1050804.664

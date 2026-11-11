@@ -1,0 +1,19 @@
+# Core runtime
+pandas>=2.0,<3
+numpy>=1.24,<3
+duckdb>=1.0
+pydantic>=2.5
+python-dotenv>=1.0
+openpyxl>=3.1
+XlsxWriter>=3.1
+
+# Dashboard
+streamlit>=1.30
+plotly>=5.18
+
+# Reporting
+reportlab>=4.0
+matplotlib>=3.7
+
+# Testing
+pytest>=8.0

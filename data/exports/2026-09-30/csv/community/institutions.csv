@@ -1,0 +1,6 @@
+﻿bank_id,bank_name,region,peer_group
+SSK001,Muster-Sparkasse Nord (fiktiv),NORTH,PG_URBAN
+SSK002,Muster-Sparkasse Süd (fiktiv),SOUTH,PG_REGIONAL
+SSK003,Muster-Sparkasse West (fiktiv),WEST,PG_URBAN
+SSK004,Muster-Sparkasse Mitte (fiktiv),CENTRAL,PG_REGIONAL
+SSK005,Muster-Sparkasse Ost (fiktiv),EAST,PG_URBAN

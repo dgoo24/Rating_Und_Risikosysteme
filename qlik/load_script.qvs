@@ -1,0 +1,78 @@
+// Automated Risk Portfolio Reporting Pipeline
+// Sample Qlik Sense load script. Generated for the synthetic demonstration only.
+// Adjust vDataPath to the folder containing the exported CSV files.
+
+SET ThousandSep=',';
+SET DecimalSep='.';
+SET MoneyThousandSep=',';
+SET MoneyDecimalSep='.';
+SET DateFormat='YYYY-MM-DD';
+SET TimestampFormat='YYYY-MM-DD hh:mm:ss';
+SET vDataPath='..\data\exports\qlik';
+
+// ---------------------------------------------------------------------------
+// Dimensions
+// ---------------------------------------------------------------------------
+dim_institution:
+LOAD * FROM [$(vDataPath)/dim_institution.csv] (txt, utf8, embedded labels, delimiter is ',', msq);
+
+dim_rating:
+LOAD * FROM [$(vDataPath)/dim_rating.csv] (txt, utf8, embedded labels, delimiter is ',', msq);
+
+dim_collateral_type:
+LOAD * FROM [$(vDataPath)/dim_collateral_type.csv] (txt, utf8, embedded labels, delimiter is ',', msq);
+
+dim_date:
+LOAD * FROM [$(vDataPath)/dim_date.csv] (txt, utf8, embedded labels, delimiter is ',', msq);
+
+dim_metric:
+LOAD * FROM [$(vDataPath)/dim_metric.csv] (txt, utf8, embedded labels, delimiter is ',', msq);
+
+fact_exposure_snapshot:
+LOAD * FROM [$(vDataPath)/fact_exposure_snapshot.csv] (txt, utf8, embedded labels, delimiter is ',', msq);
+
+fact_rating_history:
+LOAD * FROM [$(vDataPath)/fact_rating_history.csv] (txt, utf8, embedded labels, delimiter is ',', msq);
+
+fact_collateral:
+LOAD * FROM [$(vDataPath)/fact_collateral.csv] (txt, utf8, embedded labels, delimiter is ',', msq);
+
+fact_recovery_cashflow:
+LOAD * FROM [$(vDataPath)/fact_recovery_cashflow.csv] (txt, utf8, embedded labels, delimiter is ',', msq);
+
+fact_rating_distribution:
+LOAD * FROM [$(vDataPath)/fact_rating_distribution.csv] (txt, utf8, embedded labels, delimiter is ',', msq);
+
+fact_default_rate:
+LOAD * FROM [$(vDataPath)/fact_default_rate.csv] (txt, utf8, embedded labels, delimiter is ',', msq);
+
+fact_loss_recovery:
+LOAD * FROM [$(vDataPath)/fact_loss_recovery.csv] (txt, utf8, embedded labels, delimiter is ',', msq);
+
+fact_collateral_coverage:
+LOAD * FROM [$(vDataPath)/fact_collateral_coverage.csv] (txt, utf8, embedded labels, delimiter is ',', msq);
+
+fact_recovery_curve:
+LOAD * FROM [$(vDataPath)/fact_recovery_curve.csv] (txt, utf8, embedded labels, delimiter is ',', msq);
+
+fact_benchmark:
+LOAD * FROM [$(vDataPath)/fact_benchmark.csv] (txt, utf8, embedded labels, delimiter is ',', msq);
+
+fact_quality_batch:
+LOAD * FROM [$(vDataPath)/fact_quality_batch.csv] (txt, utf8, embedded labels, delimiter is ',', msq);
+
+fact_quality_finding:
+LOAD * FROM [$(vDataPath)/fact_quality_finding.csv] (txt, utf8, embedded labels, delimiter is ',', msq);
+
+assumptions:
+LOAD * FROM [$(vDataPath)/assumptions.csv] (txt, utf8, embedded labels, delimiter is ',', msq);
+
+// ---------------------------------------------------------------------------
+// Suggested associations:
+//   fact_exposure_snapshot.bank_id -> dim_institution.bank_id
+//   fact_exposure_snapshot.rating_grade -> dim_rating.rating_grade
+//   fact_collateral.collateral_type -> dim_collateral_type.collateral_type
+//   fact_benchmark.metric_id -> dim_metric.metric_id
+// The date fields are ISO strings. Add a master calendar in Qlik if needed.
+// ---------------------------------------------------------------------------
+TRACE Synthetic demonstration data only - not regulatory reporting.
