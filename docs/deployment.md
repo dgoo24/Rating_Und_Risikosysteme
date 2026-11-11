@@ -36,18 +36,18 @@ re-running the pipeline**:
 
 Excluded (regenerable): the synthetic landing zone
 (`python -m synthetic_data.generate_data`, seed 42), pipeline logs, caches.
-Total repository size: ~19 MB — far below GitHub's limits.
+Total repository size: ~35 MB — far below GitHub's limits.
 
 ## Step-by-step deployment
 
 ### 1. Push the repository to GitHub
 
 The local repository is already initialised and committed. Create an empty
-repository on [github.com/new](https://github.com/new) (name it e.g.
-`risk-portfolio-reporting`, Public), then from the project directory:
+repository on [github.com/new](https://github.com/new) (this project uses
+`Rating_Und_Risikosysteme`, Public), then from the project directory:
 
 ```powershell
-git remote add origin https://github.com/<your-user>/risk-portfolio-reporting.git
+git remote add origin https://github.com/<your-user>/Rating_Und_Risikosysteme.git
 git branch -M main
 git push -u origin main
 ```
@@ -60,7 +60,7 @@ Manager stores them.)
 1. Go to [share.streamlit.io](https://share.streamlit.io) and sign in
    **with GitHub**.
 2. Click **New app** → *Deploy an app*.
-3. Select the repository `risk-portfolio-reporting`, branch `main`,
+3. Select the repository `Rating_Und_Risikosysteme`, branch `main`,
    main file path `app.py`.
 4. Click **Deploy**. First build takes 2–4 minutes (pip installs
    `requirements.txt`).
